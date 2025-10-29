@@ -3,8 +3,11 @@
 This is GROUP 888, our title is Online Library Management
 
 ## Table of Content
-Link to the sample section: [Group Member](#Group-Member).
-
+[Group Member](#group-member)
+[Require](#require)
+[Installation](#installation)
+[Pre-Launch Setup](#pre-launch-setup)
+[How To Launch](#how-to-launch)
 
 ## Group Member
 - [Boon Shi Ying](https://github.com/hazzelying0803)

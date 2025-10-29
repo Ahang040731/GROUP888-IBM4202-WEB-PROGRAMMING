@@ -16,6 +16,10 @@ This is GROUP 888, our title is Online Library Management
 ## Installation
 - Laravel 12.x
 
+## Pre-Launch Setup
+1. duplicate [.env.example] file and rename asn [.env]
+2. remove [#] of DB_HOST,DB_PORT,DB_DATABASE,DB_USERNAME,DB_PASSWORD in line [24 - 28]
+
 ## How To Launch
 Before launch the web, ensure you are under the path of the project then run:
     php artisan serve

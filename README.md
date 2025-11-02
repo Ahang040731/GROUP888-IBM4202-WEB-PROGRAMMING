@@ -22,16 +22,17 @@ This is GROUP 888, our title is Online Library Management
 - Node.js 24.11.0
 
 ## Database
-### SSMS
-If you are decided to use SSMS as the database you will need to install two extension for `php 8.4` which are
-[sqlsrv.dll 5.12](https://pecl.php.net/package/sqlsrv) and
-[pdo_sqlsrv.dll 5.12](https://pecl.php.net/package/pdo_sqlsrv). These file should be place under `php/ext/..` path and add these code to ur `php.ini`.
+### SQL Server Management Studio (SSMS)
+If you are decided to use __SQL Server Management Studio__ as the database, you will need to install two extension for `php 8.4`:
+- [sqlsrv.dll 5.12](https://pecl.php.net/package/sqlsrv) and
+- [pdo_sqlsrv.dll 5.12](https://pecl.php.net/package/pdo_sqlsrv)
+These file should be place under `php/ext/..` path and add these code to your `php.ini`.
 ```
 extension=php_pdo_sqlsrv.dll
 extension=php_sqlsrv.dll
 ```
 
-- MYSQL
+### MYSQL
 
 ## Installation
 - Laravel 12.x

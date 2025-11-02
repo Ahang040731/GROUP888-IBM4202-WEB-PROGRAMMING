@@ -18,8 +18,8 @@ This is GROUP 888, our title is Online Library Management
 - [Ooi Xing Hong](https://github.com/Kagura5201314)
 
 ## Require
-### PHP 8.4.13
-If you download `PHP` from officel website, ensure you had add these code to your `php.ini`.
+### php 8.4
+After install [php](https://www.php.net/downloads.php), ensure you had add these code to your `php.ini`.
 ```
 extension_dir = "ext"
 
@@ -30,7 +30,8 @@ extension=openssl
 extension=zip
 ```
 
-### Node.js 24.11.0
+### Node.js 24.11
+[Node.js](https://nodejs.org/en) is require as it handle frontend asset bundler. Without it Tailwind CSS, React, Vue, or modern JavaScript cannot be use
 
 ## Database
 ### SQL Server Management Studio (SSMS)
@@ -60,21 +61,66 @@ extension=sqlite3
 ```
 
 ## Installation
-- Laravel 12.x
+### Laravel 12.x
+To install __Laravel__ you are rquire to install [Composer](https://getcomposer.org/download/) first.  
+After installed [Composer](https://getcomposer.org/download/), you need to download this project, then go to the project path and run:
+```
+composer install
+npm install
+```
 
 
+## .env Setup
+ensure your under your project root path and run this code:
+```
+cp .env.example .env
+php artisan key:generate
+```
 
-## Pre-Launch Setup
-1. duplicate `.env.example` file and rename asn `.env`
-2. remove `#` of `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` in line `24 - 28`
+Then, depends on what database you want to use chose one from them:
+1. SQL Server Management Studio (SSMS)
+```
+DB_CONNECTION=sqlsrv
+DB_HOST=localhost\SQLEXPRESS
+DB_PORT=1433
+DB_DATABASE="example database"
+DB_USERNAME=example
+DB_PASSWORD=example
+DB_ENCRYPT=yes
+DB_TRUST_SERVER_CERTIFICATE=true
+```
+- `DB_HOST`: The server name should base on your SQL Express Server register name for example your server register as `SQLEXPRESSserver`, your `DB_HOST=` value should be `localhost\SQLEXPRESSserver`.  
+- `DB_PORT`: You need to go SQL Server Manager(SQLServerManager16.msc) under your `C:\Windows\SysWOW64\..` to enable it.  
+
+2. MYSQL
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE="example database"
+DB_USERNAME=example
+DB_PASSWORD=example
+```
+3. SQLITE
+```
+DB_CONNECTION=sqlite
+```
+
+After finish all these config, run this in terminal under the project path:
+```
+php artisan migrate
+```
+
 
 ## How To Launch
 Before launch the web, ensure you are under the path of the project then run:
-> php artisan serve
-
+```
+npm run dev
+php artisan serve
+```
 the web will be launch at port:
 
-http://127.0.0.1:8000
+> http://127.0.0.1:8000
 
 
 ## How to develop
@@ -86,7 +132,10 @@ This folder store all of the data of table as model. All of the data should use 
 This folder store all the method use to generate random data for database. Itself cannot write data into database, must use with seeders.  
 
 `..\database\migrations\..`  
-This folder store all file that use to create database table that needed for this application.  
+This folder store all file that use to create database table that needed for this application. If you want to create a table run this code:
+```
+php artisan make:migration create_example_table
+```
 
 `..\database\seeders\..`  
 This folder store all file that use to insert pre-defined data into database. It can insert multiple row of data to different table in one time to make the process automatic.  
@@ -113,7 +162,6 @@ This file is the one storing the header and sidemenu. For those page require hea
     <!-- YOUR OWN CONTENT -->
 
 @endsection
-
 ```  
 ### Backend  
 `..\app\Http\Controllers\..`  

@@ -21,6 +21,10 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+
+    // this file is use to create algorithm that random generate data for database, itself cannot insert data into database
+    // must use by seeder to call it as function (by Heng)
     public function definition(): array
     {
         return [

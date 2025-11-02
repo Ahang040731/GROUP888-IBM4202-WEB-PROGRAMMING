@@ -70,3 +70,46 @@ extension=sqlite3
 Before launch the web, ensure you are under the path of the project then run:
     > php artisan serve
 the web will be launch at port http://127.0.0.1:8000
+
+
+## How to develop
+__Database__
+`..\app\Models\..`  
+This folder store all of the data of table as model. All of the data should use this method to store and call.  
+
+`..\database\factories\..`  
+This folder store all the method use to generate random data for database. Itself cannot write data into database, must use with seeders.  
+
+`..\database\migrations\..`  
+This folder store all file that use to create database table that needed for this application.  
+
+`..\database\seeders\..`  
+This folder store all file that use to insert pre-defined data into database. It can insert multiple row of data to different table in one time to make the process automatic.  
+
+__Frontend__
+`..\resources\css\..`  
+This folder store all of the custom css for website.  
+
+`..\resources\js\..`  
+This folder store all of the custom js for website.
+
+`..\resources\view\..`  
+This folder store all web page. Ensure all of the page is using `example.blade.php` format.
+
+`..\resources\view\layouts\app.blade.php`  
+This file is the one storing the header and sidemenu. For those page require header and side menu ensure you call it before your own coding. Example:   
+```
+@extends('layouts.app')
+
+@section('title', 'Dashboard')
+
+@section('content')
+
+    <!-- YOUR OWN CONTENT -->
+
+@endsection
+
+```  
+__Backend__  
+`..\app\Http\Controllers\..`  
+This folder store all of the backend file. The file name should follow the frontend file name with `Controller` at the back for example `DashboardController.php`.  

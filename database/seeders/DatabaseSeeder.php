@@ -2,22 +2,30 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Account;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
      */
+    // php artisan db:seed
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Default admin account
+        Account::create([
+            'email' => 'admin@library.com',
+            'password' => Hash::make('admin'), // hashed
+            'role' => 'admin',
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $userAccount = Account::create([
+            'email' => 'user@library.com',
+            'password' => Hash::make('user'), // hashed
+            'role' => 'user',
         ]);
     }
 }

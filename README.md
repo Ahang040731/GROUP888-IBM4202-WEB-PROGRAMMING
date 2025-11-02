@@ -30,21 +30,23 @@ extension=openssl
 extension=zip
 ```
 
-- Node.js 24.11.0
+### Node.js 24.11.0
 
 ## Database
 ### SQL Server Management Studio (SSMS)
 If you are decided to use __SQL Server Management Studio__ as the database, you will need to install two extension for `php 8.4`:
-- [sqlsrv.dll 5.12](https://pecl.php.net/package/sqlsrv) and
+
+- [sqlsrv.dll 5.12](https://pecl.php.net/package/sqlsrv)
 - [pdo_sqlsrv.dll 5.12](https://pecl.php.net/package/pdo_sqlsrv)
-These file should be place under `php/ext/..` path and add these code to your `php.ini`:
+
+These file should be place under `../php/ext/..` path and add these code to your `php.ini`:
 ```
 extension=php_pdo_sqlsrv.dll
 extension=php_sqlsrv.dll
 ```
 
-### MYSQL
-For __MYSQL__, you will need to add these code to your `php.ini`:
+### MySQL
+For __MySQL__, you will need to add these code to your `php.ini`:
 ```
 extension=pdo_mysql
 extension=mysqli
@@ -68,12 +70,15 @@ extension=sqlite3
 
 ## How To Launch
 Before launch the web, ensure you are under the path of the project then run:
-    > php artisan serve
-the web will be launch at port http://127.0.0.1:8000
+> php artisan serve
+
+the web will be launch at port:
+
+http://127.0.0.1:8000
 
 
 ## How to develop
-__Database__
+### Database  
 `..\app\Models\..`  
 This folder store all of the data of table as model. All of the data should use this method to store and call.  
 
@@ -86,7 +91,7 @@ This folder store all file that use to create database table that needed for thi
 `..\database\seeders\..`  
 This folder store all file that use to insert pre-defined data into database. It can insert multiple row of data to different table in one time to make the process automatic.  
 
-__Frontend__
+### Frontend  
 `..\resources\css\..`  
 This folder store all of the custom css for website.  
 
@@ -110,6 +115,6 @@ This file is the one storing the header and sidemenu. For those page require hea
 @endsection
 
 ```  
-__Backend__  
+### Backend  
 `..\app\Http\Controllers\..`  
 This folder store all of the backend file. The file name should follow the frontend file name with `Controller` at the back for example `DashboardController.php`.  

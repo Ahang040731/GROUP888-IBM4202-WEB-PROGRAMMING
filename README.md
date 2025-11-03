@@ -323,3 +323,79 @@ This file is the one storing the header and sidemenu. For those page require hea
 ### Backend  
 `..\app\Http\Controllers\..`  
 This folder store all of the backend file. The file name should follow the frontend file name with `Controller` at the back for example `DashboardController.php`.  
+
+### How to Redirect to other page
+To use redirect function you will need to add it in `../routes/web.php`.
+
+> [!IMPORTANT]
+> all of the path will start from `../resources/views/..`.
+
+#### Basic `GET` Route
+If `example_page` is target page to redirect and is under same path:
+```
+Route::get('/example_page', function () {
+    return view('example_page');
+});
+```
+
+If `example_page` is target page to redirect and is under `../resources/views/layout/..`:
+```
+Route::get('/example_page', function () {
+    return view('layout.example_page');
+});
+```
+
+> [!CAUTION]
+> If you having two `example_page` file with same name but under different path, you need to avoid using same url. It shoulde be `Route::get('/example_page', function () {..})` and `Route::get('/example_page1', function () {..})`.
+
+`GET` Route sending data to other page
+```
+Route::get('/example_page', function () {
+    $user = session('user');
+    return view('example_page', compact('user'));
+});
+```
+
+Example way using `GET` route:
+```
+<a href="{{ route('example') ?? url('/example_page') }}"
+    class="">Example</a>
+```
+
+#### Basic `POST` Route
+`POST` is normally used for submitting forms (login, register, update data).
+```
+Route::post('/example_function', function () {
+    // handle calculation etc code
+    return redirect('/example_page2');  // redirect to specific page or original page
+})->name('example_function');
+
+```
+Example form using `POST` route:
+```
+<form action="{{ route('example_function') }}" method="POST">
+    @csrf
+    <input type="text" name="email">
+    <input type="password" name="password">
+    <button type="submit">Login</button>
+</form>
+```
+
+### Session
+Store data to session :
+```
+session([
+    'account_id' => 1,
+    'username' => "example"
+    ]);
+```
+
+Call data from session :
+```
+Welcome, {{ session('username', 'Guest') }}
+```
+
+Clear session :
+```
+session()->flush();
+```

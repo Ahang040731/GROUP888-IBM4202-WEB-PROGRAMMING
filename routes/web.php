@@ -6,10 +6,12 @@ Route::get('/', function () {
     return view('dashboard');
 });
 
-Route::post('/login', function () {
-    // Just redirect for now
-    return redirect('/');
+//Route::view('/login', 'LOGIN.login')->name('login');
+
+Route::get('/login', function () {
+    return view('LOGIN.login');
 })->name('login');
+
 
 Route::post('/dashboard', function () {
     // Just redirect for now
@@ -25,3 +27,5 @@ Route::post('/', function () {
     // Just redirect for now
     return redirect('/');
 })->name('');
+
+?>

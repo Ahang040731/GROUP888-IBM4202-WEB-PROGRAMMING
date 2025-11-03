@@ -41,6 +41,8 @@
       <nav class="p-3 space-y-1">
         <a href="{{ route('dashboard') ?? url('/') }}"
            class="block px-3 py-2 rounded hover:bg-gray-100 {{ request()->is('/') ? 'bg-gray-100 font-medium' : '' }}">🏠 Dashboard</a>
+        <a href="{{ route('login') ?? '#' }}"
+           class="">test login</a>
         {{-- <a href="{{ route('books.index') ?? '#' }}"
            class="block px-3 py-2 rounded hover:bg-gray-100">📖 Books</a>
         <a href="{{ route('members.index') ?? '#' }}"

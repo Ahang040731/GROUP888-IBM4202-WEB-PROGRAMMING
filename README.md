@@ -7,6 +7,7 @@ This is __GROUP 888__, our title is __Online Library Management__
 [Database](#database)  
 [Installation](#installation)  
 [Pre-Launch Setup](#pre-launch-setup)  
+[Library Require](#library-require)  
 [How To Launch](#how-to-launch)
 
 ## Group Member
@@ -110,6 +111,11 @@ After finish all these config, run this in terminal under the project path:
 php artisan migrate
 ```
 
+## Library Require
+Tailwind v4
+```
+npm i -D tailwindcss @tailwindcss/postcss
+```
 
 ## How To Launch
 Before launch the web, ensure you are under the path of the project then run:

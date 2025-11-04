@@ -36,6 +36,16 @@ Route::post('/', function () {
     return redirect('/');
 })->name('');
 
+Route::view('/login', 'auth.login')->name('login');
+Route::view('/register', 'auth.register')->name('register');
+
+Route::post('/logout', function () {
+    auth()->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/');
+})->name('logout');
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::get('/borrowed', [BookController::class, 'borrowed'])->name('borrowed.index');

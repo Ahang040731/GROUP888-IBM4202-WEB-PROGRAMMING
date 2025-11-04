@@ -295,6 +295,7 @@ use App\Models\Example;
 If you have modify database's table or data you need to clear current database and recreate by running this code:
 ```
 php artisan migrate:fresh
+php artisan migrate:fresh --seed
 ```
 
 ### Frontend  

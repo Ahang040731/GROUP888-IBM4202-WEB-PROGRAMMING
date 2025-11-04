@@ -305,7 +305,22 @@ This folder store all of the custom css for website.
 This folder store all of the custom js for website.
 
 `..\resources\view\..`  
-This folder store all web page. Ensure all of the page is using `example.blade.php` format.
+
+__File Naming Rule__
+> [!CAUTION]
+> Please follow this for consistent file naming and structure
+
+Laravel itself doesn’t require `index.blade.php`.
+It’s just a convention that matches RESTful controller methods:
+
+| Controller Method | Typical View | Use When |
+| ----------------- | ------------ | -------- |
+| index() | index.blade.php | For a list or main section page |
+| show($id) | show.blade.php | For detail pages (e.g., book details) |
+| create() | create.blade.php | For add new record form |
+| edit($id) | edit.blade.php | For edit record form |
+| profile() or custom | profile.blade.php | For specific functions like user profile |
+
 
 `..\resources\view\layouts\app.blade.php`  
 This file is the one storing the header and sidemenu. For those page require header and side menu ensure you call it before your own coding. Example:   

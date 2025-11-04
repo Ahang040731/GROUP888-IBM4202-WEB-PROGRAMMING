@@ -465,3 +465,13 @@
     
 </body>
 </html>
+
+
+
+
+
+<!-- I want use this to skip ur error dont remove pls (by heng) -->
+
+<!-- <html>
+    @yield('content')
+</html> -->

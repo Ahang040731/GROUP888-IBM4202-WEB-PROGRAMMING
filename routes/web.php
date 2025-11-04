@@ -172,3 +172,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('reports', [Admin\ReportController::class, 'index'])->name('reports.index');
     Route::get('reports/export', [Admin\ReportController::class, 'export'])->name('reports.export');
 });
+
+
+// Redirect to borrow history route
+Route::get('/client/borrow-history', [BorrowHistoryController::class, 'index'])
+    ->name('client.borrowhistory.index');

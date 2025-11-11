@@ -47,7 +47,7 @@ Route::post('/logout', function () {
     return redirect('/');
 })->name('logout');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/client/homepage/index', [DashboardController::class, 'index'])->name('client.homepage.index');
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::get('/borrowed', [BookController::class, 'borrowed'])->name('borrowed.index');
 Route::get('/returned', [BookController::class, 'returned'])->name('returned.index');
@@ -62,5 +62,11 @@ Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
 // Redirect to borrow history route
 Route::get('/client/borrowhistory', [BorrowHistoryController::class, 'index'])
     ->name('client.borrowhistory.index');
+
+Route::post('/client/borrowhistory/{borrow}/extend', [BorrowHistoryController::class, 'extend'])
+    ->name('client.borrowhistory.extend');
+
+Route::post('/client/borrowhistory/{borrow}/cancel', [BorrowHistoryController::class, 'cancel'])
+    ->name('client.borrowhistory.cancel');
 
 ?>

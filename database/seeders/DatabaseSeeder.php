@@ -56,7 +56,7 @@ class DatabaseSeeder extends Seeder
         // Create the book
         $book = Book::create([
             'book_name' => 'The Tales of Beedle the Bard',
-            'photo' => 'https://covers.openlibrary.org/b/id/8775881-L.jpg',
+            'photo' => 'https://covers.openlibrary.org/b/id/0011416336-L.jpg',
             'author' => 'J.K. Rowling', // keep for display, even if you also use authors table
             'published_year' => 2008,
             'description' => "A collection of wizarding fairy tales by J.K. Rowling. It was first mentioned in Harry Potter and the Deathly Hallows and later published as a standalone book.",

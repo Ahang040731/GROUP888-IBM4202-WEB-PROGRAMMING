@@ -433,11 +433,11 @@
     <!-- Sidebar (Desktop) -->
     <aside class="hidden md:block w-64 sidebar min-h-[calc(100vh-64px)]">
       <nav class="p-4 space-y-2">
-        <a href="{{ route('dashboard') ?? url('/') }}" 
+        <a href="{{ url('/') }}" 
            class="nav-link"
-           :class="{ 'active': currentPage === 'dashboard' }">
+           :class="{ 'active': currentPage === 'homepage' }">
           <span class="nav-icon">🏠</span>
-          <span>Dashboard</span>
+          <span>Home Page</span>
         </a>
         
         <a href="{{ route('books.index') ?? '#' }}" 
@@ -494,11 +494,11 @@
         </div>
         
         <nav class="p-4 space-y-2">
-          <a href="{{ route('dashboard') ?? url('/') }}" 
+          <a href="{{ url('/') }}" 
              class="nav-link" 
              @click="sidebarOpen=false">
             <span class="nav-icon">🏠</span>
-            <span>Dashboard</span>
+            <span>Home Page</span>
           </a>
           
           <a href="{{ route('books.index') ?? '#' }}" 
@@ -629,5 +629,6 @@
       });
     }, 5000);
   </script>
+  @stack('scripts')
 </body>
 </html>

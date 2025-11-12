@@ -147,5 +147,10 @@ class DatabaseSeeder extends Seeder
             'connection'=> config('database.default'),
             'sqlite_path'=> config('database.connections.sqlite.database'),
         ]);
+
+        Favourite::create([
+            'user_id' => $borrower->id,
+            'book_id' => $book->id,
+        ]);
     }
 }

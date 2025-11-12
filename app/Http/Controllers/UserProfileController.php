@@ -8,30 +8,30 @@ use Illuminate\Support\Facades\Storage;
 
 class UserProfileController extends Controller
 {
-    // 显示用户资料
+    // show profile
     public function show()
     {
-        // 临时使用 user_id = 1
+        
         $user = User::findOrFail(1);
         return view('client.profile.index', compact('user'));
     }
 
-    // 更新用户资料
+    //update profile
     public function update(Request $request)
     {
-        $user = User::findOrFail(1); // 临时使用 user_id = 1
+        $user = User::findOrFail(1); 
 
-        // 验证输入
+        
         $validated = $request->validate([
             'username' => 'required|string|max:255',
             'phone'    => 'nullable|string|max:20',
             'address'  => 'nullable|string|max:255',
-            'photo'    => 'nullable|image|max:2048', // 图片大小限制 2MB
+            'photo'    => 'nullable|image|max:2048', 
         ]);
 
-        // 处理上传头像
+        
         if ($request->hasFile('photo')) {
-            // 删除旧照片
+            // delete photo
             if ($user->photo) {
                 Storage::delete($user->photo);
             }
@@ -40,10 +40,10 @@ class UserProfileController extends Controller
             $validated['photo'] = $path;
         }
 
-        // 更新用户
+        // update
         $user->update($validated);
 
-        return redirect()->route('client.profile')
+        return redirect()->route('client.profile.index')
                          ->with('success', 'Profile updated successfully.');
     }
 }

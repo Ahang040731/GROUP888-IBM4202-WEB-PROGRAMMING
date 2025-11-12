@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\BookController;
-use App\Http\Controllers\BorrowHistoryController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FinesController;
 
 Route::middleware(['auth'])->group(function () {

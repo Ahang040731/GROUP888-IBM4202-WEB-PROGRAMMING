@@ -6,6 +6,12 @@ use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BorrowHistoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FinesController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/fines', [FinesController::class, 'index'])->name('fines.index');
+    Route::post('/fines/{fine}/pay', [FinesController::class, 'pay'])->name('client.fines.pay');
+});
 
 Route::get('/', function () {
     return view('client.homepage.index');
@@ -52,11 +58,11 @@ Route::get('/client/homepage/index', [DashboardController::class, 'index'])->nam
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::get('/borrowed', [BookController::class, 'borrowed'])->name('borrowed.index');
 Route::get('/returned', [BookController::class, 'returned'])->name('returned.index');
-Route::get('/fines', [BookController::class, 'fines'])->name('fines.index');
+Route::get('/fines', [FinesController::class, 'index'])->name('fines.index');
 Route::get('/favorites', [FavouriteController::class, 'index'])->name('favorites.index');
 Route::get('/profile/edit', [DashboardController::class, 'editProfile'])->name('profile.edit');
 Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
-
+Route::post('/fines/{fine}/pay', [FinesController::class, 'pay'])->name('fines.pay');
 
 
 // Redirect to borrow history route

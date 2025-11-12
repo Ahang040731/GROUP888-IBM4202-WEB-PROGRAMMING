@@ -6,7 +6,6 @@ use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BorrowHistoryController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\FinesController;
 
 Route::get('/', function () {
     return view('client.homepage.index');
@@ -53,8 +52,7 @@ Route::get('/client/homepage/index', [DashboardController::class, 'index'])->nam
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::get('/borrowed', [BookController::class, 'borrowed'])->name('borrowed.index');
 Route::get('/returned', [BookController::class, 'returned'])->name('returned.index');
-Route::get('/fines', [FinesController::class, 'index'])->name('fines.index');
-//Route::get('/fines', [BookController::class, 'fines'])->name('fines.index');
+Route::get('/fines', [BookController::class, 'fines'])->name('fines.index');
 Route::get('/favorites', [FavouriteController::class, 'index'])->name('favorites.index');
 Route::get('/profile/edit', [DashboardController::class, 'editProfile'])->name('profile.edit');
 Route::post('/logout', [DashboardController::class, 'logout'])->name('logout');
@@ -104,6 +102,15 @@ Route::prefix('admin')->group(function () {
     Route::post('/books/{book}/copies', [AdminBookController::class, 'addCopy'])->name('admin.books.copies.add');
     Route::delete('/books/copies/{copy}', [AdminBookController::class, 'deleteCopy'])->name('admin.books.copies.destroy');
     Route::post('/books/copies/{copy}/status/{status}', [AdminBookController::class, 'updateCopyStatus'])->name('admin.books.copies.status');
+});
+
+use App\Http\Controllers\AdminUserController;
+
+Route::prefix('admin')->group(function () {
+    Route::get('/users', [AdminUserController::class, 'index'])->name('admin.usermanagement.index');
+    Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.usermanagement.edit');
+    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('admin.usermanagement.update');
+    Route::post('/users/{user}/toggle', [AdminUserController::class, 'toggleStatus'])->name('admin.usermanagement.toggle');
 });
 
 

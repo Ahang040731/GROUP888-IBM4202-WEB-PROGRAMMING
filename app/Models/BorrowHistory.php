@@ -3,92 +3,84 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 class BorrowHistory extends Model
 {
     protected $table = 'borrow_history';
 
     protected $fillable = [
-        'user_id',
-        'book_id',
-        'copy_id',
-        'borrowed_at',
-        'due_at',
-        'returned_at',
-        'status',
-        'extension_count',
-        'extension_reason',
-        'approve_status',
+        'user_id','book_id','copy_id',
+        'borrowed_at','due_at','returned_at',
+        'status','extension_count','extension_reason','approve_status',
+    ];
+    
+    public $timestamps = true;
+
+    /** Make sure these are Carbon instances */
+    protected $casts = [
+        'borrowed_at' => 'datetime',
+        'due_at'      => 'datetime',
+        'returned_at' => 'datetime',
     ];
 
-    // Automatically handle timestamps
-    public $timestamps = true;
+    /** Expose handy, date-only/computed fields to Blade */
+    protected $appends = [
+        'borrow_date','due_date','returned_date','late_days','is_overdue',
+    ];
 
     /* ==========================
        Relationships
     =========================== */
-
-    // Each borrowing record belongs to one user
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    // Each borrowing record is tied to one book
-    public function book()
-    {
-        return $this->belongsTo(Book::class);
-    }
-
-    // Each borrowing record corresponds to one specific copy
-    public function copy()
-    {
-        return $this->belongsTo(BookCopy::class, 'copy_id');
-    }
+    public function user(): BelongsTo { return $this->belongsTo(User::class); }
+    public function book(): BelongsTo { return $this->belongsTo(Book::class); }
+    public function copy(): BelongsTo { return $this->belongsTo(BookCopy::class,'copy_id'); }
 
     /* ==========================
-       Scopes & Helpers
+       Scopes
+    =========================== */
+    public function scopeActive($q)   { return $q->where('status','active'); }
+    public function scopeOverdue($q)  { return $q->where('status','overdue'); }
+    public function scopeReturned($q) { return $q->where('status','returned'); }
+
+    /* ==========================
+       Accessors / Helpers
     =========================== */
 
-    // Only active borrowings
-    public function scopeActive($query)
+    /** Date-only strings (YYYY-MM-DD) — UI can use these */
+    public function getBorrowDateAttribute(): ?string { return $this->borrowed_at?->toDateString(); }
+    public function getDueDateAttribute(): ?string     { return $this->due_at?->toDateString(); }
+    public function getReturnedDateAttribute(): ?string{ return $this->returned_at?->toDateString(); }
+
+    /** Same-day return is not late. Overdue only if today is AFTER due date. */
+    public function getIsOverdueAttribute(): bool
     {
-        return $query->where('status', 'active');
+        if ($this->returned_at || !$this->due_at) return false;
+        return Carbon::today()->gt($this->due_at->copy()->startOfDay());
     }
 
-    // Only overdue borrowings
-    public function scopeOverdue($query)
-    {
-        return $query->where('status', 'overdue');
-    }
-
-    // Only returned borrowings
-    public function scopeReturned($query)
-    {
-        return $query->where('status', 'returned');
-    }
-
-    // Whether this borrowing is overdue
-    public function isOverdue(): bool
-    {
-        return $this->status === 'overdue' || ($this->due_at < now() && is_null($this->returned_at));
-    }
-
-    // Days late (0 if not overdue)
+    /**
+     * Late days by DATE only:
+     * - if returned: max(return_date - due_date, 0)
+     * - else:        max(today - due_date, 0)
+     */
     public function getLateDaysAttribute(): int
     {
-        if ($this->returned_at && $this->returned_at->gt($this->due_at)) {
-            return $this->returned_at->diffInDays($this->due_at);
+        if (!$this->due_at) return 0;
+
+        $due = $this->due_at->copy()->startOfDay();
+
+        if ($this->returned_at) {
+            $ret = $this->returned_at->copy()->startOfDay();
+            return $ret->gt($due) ? $ret->diffInDays($due) : 0;
         }
 
-        if (is_null($this->returned_at) && $this->due_at->lt(now())) {
-            return now()->diffInDays($this->due_at);
-        }
-
-        return 0;
+        $today = Carbon::today();
+        return $today->gt($due) ? $today->diffInDays($due) : 0;
     }
 
-    // Check if book has been returned
+    /** Convenience (kept from your version) */
     public function isReturned(): bool
     {
         return !is_null($this->returned_at);

@@ -245,7 +245,8 @@
 
     /* Main Content Area */
     .main-content {
-      background: #f8fafc;
+      padding: 0%;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
       min-height: calc(100vh - 72px);
       animation: fadeInUp 0.5s ease-out;
     }
@@ -431,13 +432,17 @@
 
   <div class="max-w-screen-2xl mx-auto flex">
     <!-- Sidebar (Desktop) -->
-    <aside class="hidden md:block w-64 sidebar min-h-[calc(100vh-64px)]">
+    <aside class="hidden md:block w-64 sidebar
+         md:sticky md:top-16          <!-- stick under 64px header -->
+         h-[calc(100vh-4rem)]         <!-- 100vh - 64px -->
+         overflow-y-auto              <!-- its own scrollbar -->
+         z-40">
       <nav class="p-4 space-y-2">
-        <a href="{{ route('dashboard') ?? url('/') }}" 
+        <a href="{{ url('/') }}" 
            class="nav-link"
-           :class="{ 'active': currentPage === 'dashboard' }">
+           :class="{ 'active': currentPage === 'homepage' }">
           <span class="nav-icon">🏠</span>
-          <span>Dashboard</span>
+          <span>Home Page</span>
         </a>
         
         <a href="{{ route('books.index') ?? '#' }}" 
@@ -471,7 +476,7 @@
 
         <div class="border-t border-gray-200 my-4"></div>
 
-        <a href="{{ route('profile.show') ?? '#' }}" 
+        <a href="{{ route('client.profile.index') ?? '#' }}" 
            class="nav-link"
            :class="{ 'active': currentPage.includes('profile') }">
           <span class="nav-icon">👤</span>
@@ -494,11 +499,11 @@
         </div>
         
         <nav class="p-4 space-y-2">
-          <a href="{{ route('dashboard') ?? url('/') }}" 
+          <a href="{{ url('/') }}" 
              class="nav-link" 
              @click="sidebarOpen=false">
             <span class="nav-icon">🏠</span>
-            <span>Dashboard</span>
+            <span>Home Page</span>
           </a>
           
           <a href="{{ route('books.index') ?? '#' }}" 
@@ -532,7 +537,7 @@
 
           <div class="border-t border-gray-200 my-4"></div>
 
-          <a href="{{ route('profile.show') ?? '#' }}" 
+          <a href="{{ route('client.profile.index') ?? '#' }}" 
              class="nav-link"
              @click="sidebarOpen=false">
             <span class="nav-icon">👤</span>
@@ -629,5 +634,6 @@
       });
     }, 5000);
   </script>
+  @stack('scripts')
 </body>
 </html>

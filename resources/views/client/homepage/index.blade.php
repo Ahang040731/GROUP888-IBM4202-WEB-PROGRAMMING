@@ -198,13 +198,10 @@
 </div>
 
 <style>
-* {
+.dashboard-container {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-.dashboard-container {
     min-height: 100vh;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding-bottom: 60px;

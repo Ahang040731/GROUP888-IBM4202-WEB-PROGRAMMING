@@ -1,0 +1,135 @@
+.bh-container {
+  padding: 12px;
+}
+
+/* Global for this component */
+.bh-root { @apply font-sans antialiased text-slate-800; }
+
+/* Headings */
+.bh-h1 { color:white; font-size: 2.5rem; font-weight: 700; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);}
+.bh-h2 { color:white; font-size: 1.75rem; font-weight: 600; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);}
+
+/* Card */
+.bh-card { @apply border rounded p-4 bg-white; border-radius: 16px; border-width: 0px;}
+.bh-row {
+  @apply flex items-center gap-6;
+  min-height: 140px;
+}
+
+/* Cover */
+.bh-cover { @apply object-cover rounded-md shadow-sm shrink-0; width: 160px; height: 200px; }
+
+/* Content block */
+.bh-content {
+  @apply flex flex-col justify-between min-w-0 h-full py-1;
+}
+
+/* Title + badge */
+.bh-titlebar { @apply flex items-center gap-2 mb-2; }
+.bh-title    { 
+    font-family: var(--font-cus);
+    @apply font-bold text-lg md:text-xl leading-6 text-slate-900; }
+
+/* Secondary lines under title */
+.bh-copy { @apply text-[11px] md:text-xs px-2 py-0.5 rounded-full font-medium bg-slate-100 text-slate-700;}
+
+/* --- Meta layout: 2 columns (left: Borrowed/Due; right: Extensions or Returned/Late) --- */
+.bh-meta{
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* left grows, right fits content */
+  column-gap: 2rem;
+  align-items: start;
+  color: #334155;          /* slate-700 */
+  font-size: 0.9375rem;    /* ~15px */
+}
+
+/* Left column: stack Borrowed & Due */
+.bh-meta-left{
+  display: grid;
+  row-gap: .35rem;         /* space between Borrowed and Due */
+}
+
+/* Right column: align to the far right */
+.bh-meta-right{
+  text-align: right;
+}
+
+/* items inside each column: label + value spacing */
+.bh-meta-left > div,
+.bh-meta-right > div{
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 640px){
+  .bh-meta{
+    grid-template-columns: 1fr;
+    row-gap: .35rem;
+  }
+  .bh-meta-right{
+    justify-self: start;
+    text-align: left;
+  }
+}
+
+
+/* "by Author" line */
+.bh-by {
+  @apply flex items-center gap-1 mb-2 text-[15px] md:text-base text-slate-600;
+}
+.bh-author {
+  @apply font-medium text-slate-700 italic;
+}
+
+/* Badges */
+.bh-badge           { @apply text-[11px] md:text-xs px-2 py-0.5 rounded-full font-medium; }
+.bh-badge--active   { @apply bg-green-100 text-green-700; }
+.bh-badge--overdue  { @apply bg-red-100 text-red-700; }
+.bh-badge--pending  { @apply bg-yellow-100 text-yellow-700; }
+.bh-badge--returned { @apply bg-slate-100 text-slate-700; }
+
+/* Right-side actions */
+.bh-actions {
+  display: flex;
+  align-items: center;       /* vertically center */
+  justify-content: flex-end; /* push button to the right edge */
+  width: 10rem;              /* fixed width container (160px) */
+  min-width: 10rem;
+  margin-left: auto;         /* ensures it stays on the far right */
+}
+
+/* Buttons (same size, theme colors) */
+.bh-btn {
+  width: 8rem;               /* 128px button width */
+  height: 2.75rem;           /* consistent height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  transition: all 0.2s ease-in-out;
+}
+/* Gradient + hover consistency */
+.bh-btn--extend {
+  background: linear-gradient(135deg, #6366f1, #9333ea);
+}
+.bh-btn--extend:hover {
+  background: linear-gradient(135deg, #4f46e5, #7e22ce);
+}
+
+.bh-btn--cancel {
+  background: linear-gradient(135deg, #ef4444, #ec4899);
+}
+.bh-btn--cancel:hover {
+  background: linear-gradient(135deg, #dc2626, #db2777);
+}
+/* Empty state */
+.bh-empty { @apply rounded border p-4 text-slate-600 bg-white; }
+
+/* Lists */
+.bh-list { @apply space-y-3; }

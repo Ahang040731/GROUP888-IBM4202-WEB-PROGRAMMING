@@ -13,10 +13,9 @@ class AdminProfileController extends Controller
      */
     public function index()
     {
-        // ⚙️ 暂时写死用第一位 Admin，等 login 做好后再用 auth()->user()->admin
+        
         $admin = Admin::with('account')->first();
 
-        // 如果数据库暂时没 Admin 记录，就返回空对象避免报错
         if (!$admin) {
             $admin = new Admin([
                 'username' => 'System Admin',

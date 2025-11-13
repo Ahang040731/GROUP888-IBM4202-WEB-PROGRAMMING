@@ -93,15 +93,9 @@ class AuthController extends Controller
             'role' => 'user', // Default role
         ]);
 
-        // Log the user in
-        Auth::login($account);
-
-        // Regenerate session
-        $request->session()->regenerate();
-
-        // Redirect to homepage
-        return redirect()->route('homepage')
-            ->with('success', 'Registration successful! Welcome to Library System.');
+        // Redirect to login instead of homepage
+        return redirect()->route('login')
+            ->with('success', 'Registration successful! Please log in.');
     }
 
     /**

@@ -153,4 +153,9 @@ Route::prefix('admin')->group(function () {
         ->name('admin.borrowhistorymanagement.markReturned');
 });
 
+Route::get('/admin/homepage', function() {
+    return view('admin.homepage');
+})->name('admin.homepage');
+
+
 ?>

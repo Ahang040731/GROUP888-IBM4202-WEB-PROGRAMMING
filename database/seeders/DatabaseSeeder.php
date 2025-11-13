@@ -1,155 +1,163 @@
-@extends('layouts.app')
+<?php
 
-@section('title', 'Admin Profile')
+namespace Database\Seeders;
 
-@section('content')
-<style>
-    /* Overall Page Style */
-    body {
-        background-color: #f5f6fa;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Account;
+use App\Models\Admin;
+use App\Models\Author;
+use App\Models\Book;
+use App\Models\BookAuthor;
+use App\Models\BookCopy;
+use App\Models\BorrowHistory;
+use App\Models\CreditTransaction;
+use App\Models\Favourite;
+use App\Models\Fine;
+use App\Models\User;
+
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     */
+    // php artisan db:seed
+    public function run(): void
+    {
+        // Default admin account
+        $adminAccount = Account::create([
+            'email' => 'admin@library.com',
+            'password' => Hash::make('admin'),
+            'role' => 'admin',
+        ]);
+
+        $adminAccount->admin()->create([
+            'username' => 'System Admin',
+            'phone' => '012-0000000',
+            'address'   => 'Somewhere',
+            'photo' => null,
+        ]);
+
+        $user = Account::create([
+            'email' => 'user@library.com',
+            'password' => Hash::make('user'), // hashed
+            'role' => 'user',
+        ]);
+
+        $borrower = $user->user()->create([
+            'username'  => 'Library User',
+            'phone'     => '012-3456789',
+            'is_active' => true,
+            'credit'    => 50.00,
+            'photo'     => null,
+            'address'   => 'Nilai, MY',
+        ]);
+
+        // Optional: create author if not exists
+        $author = Author::firstOrCreate(
+            ['name' => 'J.K. Rowling']
+        );
+
+        // Create the book
+        $book = Book::create([
+            'book_name' => 'The Tales of Beedle the Bard',
+            'photo' => 'https://covers.openlibrary.org/b/id/0011416336-L.jpg',
+            'author' => 'J.K. Rowling', // keep for display, even if you also use authors table
+            'published_year' => 2008,
+            'description' => "A collection of wizarding fairy tales by J.K. Rowling. It was first mentioned in Harry Potter and the Deathly Hallows and later published as a standalone book.",
+            'rating' => 4.8,
+            'category' => 'Fantasy',
+            'total_copies' => 5,
+            'available_copies' => 5,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Link the author to the book (pivot)
+        BookAuthor::create([
+            'book_id' => $book->id,
+            'author_id' => $author->id,
+            'author_order' => 1,
+            'role' => 'author',
+        ]);
+
+        $book->addCopies(10, 'BEEDLE'); 
+
+        // helper: reserve an available copy (mark not available)
+        $reserveCopy = function (Book $b) {
+            $copy = $b->copies()->where('status', 'available')->firstOrFail();
+            $copy->update(['status' => 'not available']);
+            return $copy;
+        };
+
+        // 1) ACTIVE
+        $copyActive = $reserveCopy($book);
+        BorrowHistory::create([
+            'user_id'          => $borrower->id,
+            'book_id'          => $book->id,
+            'copy_id'          => $copyActive->id,
+            'borrowed_at'      => now(),
+            'due_at'           => now()->addDays(7),
+            'returned_at'      => null,
+            'status'           => 'active',
+            'extension_count'  => 0,
+            'extension_reason' => null,
+            'approve_status'   => 'approved',
+        ]);
+
+        // 2) OVERDUE (borrowed 10 days ago, due 3 days ago)
+        $copyOverdue = $reserveCopy($book);
+        BorrowHistory::create([
+            'user_id'          => $borrower->id,
+            'book_id'          => $book->id,
+            'copy_id'          => $copyOverdue->id,
+            'borrowed_at'      => now()->subDays(10),
+            'due_at'           => now()->subDays(3),
+            'returned_at'      => null,
+            'status'           => 'overdue',
+            'extension_count'  => 0,
+            'extension_reason' => null,
+            'approve_status'   => 'approved',
+        ]);
+
+        // 3) RETURNED (borrowed 14 days ago, due 7 days ago, returned 3 days ago)
+        $copyReturned = $reserveCopy($book);
+        BorrowHistory::create([
+            'user_id'          => $borrower->id,
+            'book_id'          => $book->id,
+            'copy_id'          => $copyReturned->id,
+            'borrowed_at'      => now()->subDays(14),
+            'due_at'           => now()->subDays(7),
+            'returned_at'      => now()->subDays(3),
+            'status'           => 'returned',
+            'extension_count'  => 0,
+            'extension_reason' => null,
+            'approve_status'   => 'approved',
+        ]);
+        // returned copy goes back to available
+        $copyReturned->update(['status' => 'available']);
+
+        // refresh book copy counters
+        $book->update([
+            'total_copies'     => $book->copies()->count(),
+            'available_copies' => $book->copies()->where('status', 'available')->count(),
+        ]);
+
+        dump([
+            'users'    => \App\Models\User::count(),
+            'books'    => \App\Models\Book::count(),
+            'copies'   => \App\Models\BookCopy::count(),
+            'borrows'  => \App\Models\BorrowHistory::count(),
+            'sample'   => \App\Models\BorrowHistory::with(['user','book','copy'])->first(),
+            'connection'=> config('database.default'),
+            'sqlite_path'=> config('database.connections.sqlite.database'),
+        ]);
+
+        Favourite::create([
+            'user_id' => $borrower->id,
+            'book_id' => $book->id,
+        ]);
     }
-
-    .profile-card {
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        padding: 40px;
-    }
-
-    /* Bigger title */
-    h2 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #2c3e50;
-        letter-spacing: 0.5px;
-    }
-
-    label {
-        color: #444;
-        font-weight: 600;
-    }
-
-    input.form-control {
-        border-radius: 8px;
-    }
-
-    input.form-control:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-    }
-
-    /* File input section with separator line */
-    .file-upload-wrapper {
-        display: flex;
-        align-items: center;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .file-upload-wrapper input[type="file"] {
-        flex: 1;
-        border: none;
-        background: #f8f9fa;
-        padding: 8px 12px;
-    }
-
-    .file-separator {
-        width: 1px;
-        background-color: #ccc;
-        height: 38px;
-    }
-
-    .file-upload-right {
-        flex: 1;
-        text-align: center;
-        background-color: #fff;
-        padding: 8px 12px;
-        color: #888;
-        font-size: 0.9rem;
-    }
-
-    .file-preview img {
-        border-radius: 8px;
-        width: 100px;
-        border: 1px solid #ccc;
-        margin-top: 10px;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 30px;
-        font-weight: 600;
-    }
-
-    .btn-primary:hover {
-        background-color: #0069d9;
-    }
-</style>
-
-<div class="container mt-5">
-    <h2 class="mb-5 text-center">👤 Admin Profile</h2>
-
-    @if(session('success'))
-        <div class="alert alert-success text-center">{{ session('success') }}</div>
-    @endif
-
-    <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-
-        <div class="card profile-card mx-auto" style="max-width: 600px;">
-
-            <!-- Username -->
-            <div class="row mb-4 justify-content-center align-items-center">
-                <label class="col-4 col-form-label fw-bold text-end">Username</label>
-                <div class="col-6">
-                    <input type="text" name="username" class="form-control text-center border border-secondary" value="{{ $admin->username }}">
-                </div>
-            </div>
-
-            <!-- Phone -->
-            <div class="row mb-4 justify-content-center align-items-center">
-                <label class="col-4 col-form-label fw-bold text-end">Phone</label>
-                <div class="col-6">
-                    <input type="text" name="phone" class="form-control text-center border border-secondary" value="{{ $admin->phone }}">
-                </div>
-            </div>
-
-            <!-- Address -->
-            <div class="row mb-4 justify-content-center align-items-center">
-                <label class="col-4 col-form-label fw-bold text-end">Address</label>
-                <div class="col-6">
-                    <input type="text" name="address" class="form-control text-center border border-secondary" value="{{ $admin->address }}">
-                </div>
-            </div>
-
-            <!-- Photo -->
-            <div class="row mb-4 justify-content-center align-items-center">
-                <label class="col-4 col-form-label fw-bold text-end">Photo</label>
-                <div class="col-6">
-                    <div class="file-upload-wrapper">
-                        <input type="file" name="photo" class="form-control">
-                        <div class="file-separator"></div>
-                        <div class="file-upload-right">No file chosen</div>
-                    </div>
-                    @if($admin->photo)
-                        <div class="file-preview text-center">
-                            <img src="{{ asset('storage/'.$admin->photo) }}" class="mt-2 d-block mx-auto">
-                        </div>
-                    @endif
-                </div>
-            </div>
-
-            <!-- Submit Button -->
-            <div class="row justify-content-center">
-                <div class="col-10 text-center">
-                    <button type="submit" class="btn btn-primary px-5">Update Profile</button>
-                </div>
-            </div>
-
-        </div>
-    </form>
-</div>
-@endsection
+}

@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 
 class AdminBorrowHistoryController extends Controller
 {
-    // 显示所有借书记录
+    // show all book history
     public function index()
     {
-        // eager load 用户、书籍、书籍副本
+        // eager load user book and copy
         $borrows = BorrowHistory::with(['user', 'book', 'copy'])
                     ->orderBy('borrowed_at', 'desc')
                     ->paginate(10);
@@ -18,7 +18,7 @@ class AdminBorrowHistoryController extends Controller
         return view('admin.borrowhistorymanagement.index', compact('borrows'));
     }
 
-    // 标记书籍为已归还
+    // mark book as returned
     public function markReturned($id)
     {
         $borrow = BorrowHistory::findOrFail($id);
@@ -26,7 +26,7 @@ class AdminBorrowHistoryController extends Controller
         $borrow->returned_at = now();
         $borrow->save();
 
-        // 书籍副本状态更新
+        // Update book copy status
         $borrow->copy->update(['status' => 'available']);
 
         return redirect()->route('admin.borrowhistorymanagement.index')

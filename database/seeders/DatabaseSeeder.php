@@ -108,7 +108,7 @@ class DatabaseSeeder extends Seeder
         );
 
         // Ensure at least 10 copies exist
-        if ($book->copies()->count() < 10) {
+        if ($book->copies()->count() < 70) {
             $book->addCopies(10 - $book->copies()->count(), 'BEEDLE');
         }
 

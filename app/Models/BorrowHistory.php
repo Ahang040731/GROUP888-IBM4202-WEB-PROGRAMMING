@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 class BorrowHistory extends Model
@@ -36,10 +37,7 @@ class BorrowHistory extends Model
     public function user(): BelongsTo { return $this->belongsTo(User::class); }
     public function book(): BelongsTo { return $this->belongsTo(Book::class); }
     public function copy(): BelongsTo { return $this->belongsTo(BookCopy::class,'copy_id'); }
-    public function fine()
-{
-    return $this->hasOne(Fine::class, 'borrow_history_id');
-}
+    public function fine(): HasOne { return $this->hasOne(Fine::class, 'borrowing_id'); }
 
 
     /* ==========================
@@ -62,8 +60,12 @@ class BorrowHistory extends Model
     public function getIsOverdueAttribute(): bool
     {
         if ($this->returned_at || !$this->due_at) return false;
-        return Carbon::today()->gt($this->due_at->copy()->startOfDay());
+
+        return \Illuminate\Support\Carbon::today()->gt(
+            $this->due_at->copy()->startOfDay()
+        );
     }
+
 
     /**
      * Late days by DATE only:
@@ -76,14 +78,17 @@ class BorrowHistory extends Model
 
         $due = $this->due_at->copy()->startOfDay();
 
+        // If returned: late days based on returned_at
         if ($this->returned_at) {
             $ret = $this->returned_at->copy()->startOfDay();
-            return $ret->gt($due) ? $ret->diffInDays($due) : 0;
+            return $ret->gt($due) ? $due->diffInDays($ret) : 0;
         }
 
-        $today = Carbon::today();
-        return $today->gt($due) ? $today->diffInDays($due) : 0;
+        // Else: based on today
+        $today = \Illuminate\Support\Carbon::today();
+        return $today->gt($due) ? $due->diffInDays($today) : 0;
     }
+
 
     /** Convenience (kept from your version) */
     public function isReturned(): bool

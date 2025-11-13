@@ -17,7 +17,8 @@
       <ul class="bh-list">
         @foreach($current as $fine)
           @php
-            $book = $fine->borrowing->book ?? null;
+            $borrowing = $fine->borrowHistory;
+            $book      = $borrowing?->book;
             $badgeClass = 'bh-badge bh-badge--overdue';
           @endphp
 
@@ -66,7 +67,8 @@
       <ul class="bh-list mb-4">
         @foreach($previous as $fine)
           @php
-            $book = $fine->borrowing->book ?? null;
+            $borrowing = $fine->borrowHistory;
+            $book      = $borrowing?->book;
             $status = $fine->status;
             $badgeClass = match($status) {
                 'paid' => 'bh-badge bh-badge--active',

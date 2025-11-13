@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Fine;
-use App\Models\User;
 use App\Models\CreditTransaction;
 use App\Models\BorrowHistory;
 use Illuminate\Http\RedirectResponse;
@@ -11,55 +10,53 @@ use Illuminate\Http\Request;
 
 class FinesController extends Controller
 {
-    // Display fines for the current user
     public function index()
     {
-        $account = auth()->user();  // Account model (from accounts table)
+        $account = auth()->user();  // Account model (accounts table)
 
         if (!$account || !$account->user) {
             abort(403, 'No user profile linked to this account.');
         }
 
-        $user = $account->user;     // related User profile
-        $userId = $user->id;        // matches fines.user_id & borrow_histories.user_id
+        $user   = $account->user;     // user profile (users table)
+        $userId = $user->id;          // matches fines.user_id & borrow_history.user_id
 
         /*
-        |--------------------------------------------------------------------------
+        |------------------------------------------------------------------
         | 1) Auto-generate fines for overdue borrows with no fine yet
-        |--------------------------------------------------------------------------
-        |
-        | We look for BorrowHistory rows:
-        |   - for this user
-        |   - not returned
-        |   - due date is in the past
-        |   - and they don't already have a Fine record
+        |------------------------------------------------------------------
         */
 
         $overdueBorrows = BorrowHistory::where('user_id', $userId)
             ->whereNull('returned_at')
             ->where('due_at', '<', now())
-            ->whereDoesntHave('fine') // requires fine() relation on BorrowHistory
+            ->whereDoesntHave('fine')      // uses BorrowHistory::fine()
             ->get();
 
         foreach ($overdueBorrows as $borrow) {
-            // simple fine calculation: X RM per late day
-            $lateDays = now()->diffInDays($borrow->due_at);
-            $ratePerDay = config('library.fine_per_day', 1.00); // you can change this
+            // use accessor from BorrowHistory (we’ll fix it below)
+            $lateDays = $borrow->late_days;
+            $ratePerDay = config('library.fine_per_day', 1.00);
             $amount = max(0, $lateDays * $ratePerDay);
 
+            // if somehow not late or 0 amount, skip
+            if ($amount <= 0) {
+                continue;
+            }
+
             Fine::create([
-                'user_id'           => $userId,
-                'borrow_history_id' => $borrow->id,
-                'amount'            => $amount,
-                'status'            => 'unpaid',
-                'reason'            => 'Overdue book',
+                'user_id'      => $userId,
+                'borrowing_id' => $borrow->id, // ✅ matches migration + model
+                'reason'       => 'late',      // ✅ valid enum: late | lost | damage | activate | manual
+                'amount'       => $amount,
+                'status'       => 'unpaid',
             ]);
         }
 
         /*
-        |--------------------------------------------------------------------------
-        | 2) Load current (unpaid) fines
-        |--------------------------------------------------------------------------
+        |------------------------------------------------------------------
+        | 2) Load unpaid fines (current)
+        |------------------------------------------------------------------
         */
 
         $current = Fine::with(['borrowHistory.book'])
@@ -69,9 +66,9 @@ class FinesController extends Controller
             ->get();
 
         /*
-        |--------------------------------------------------------------------------
-        | 3) Load previous (paid / waived / reversed) fines
-        |--------------------------------------------------------------------------
+        |------------------------------------------------------------------
+        | 3) Load paid/waived/reversed (previous)
+        |------------------------------------------------------------------
         */
 
         $previous = Fine::with(['borrowHistory.book'])
@@ -83,7 +80,6 @@ class FinesController extends Controller
         return view('client.fines.index', compact('current', 'previous'));
     }
 
-    // Pay a fine
     public function pay(Fine $fine, Request $request): RedirectResponse
     {
         $account = auth()->user();
@@ -118,11 +114,11 @@ class FinesController extends Controller
 
             // Record credit transaction
             CreditTransaction::create([
-                'user_id'    => $user->id,
-                'delta'      => -$fine->amount,
-                'reason'     => 'fine',
-                'method'     => 'system',
-                'reference'  => 'FINE#'.$fine->id,
+                'user_id'   => $user->id,
+                'delta'     => -$fine->amount,
+                'reason'    => 'fine',
+                'method'    => 'system',
+                'reference' => 'FINE#'.$fine->id,
             ]);
         }
 

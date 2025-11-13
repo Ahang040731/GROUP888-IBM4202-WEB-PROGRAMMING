@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Fine extends Model
 {
@@ -23,19 +24,19 @@ class Fine extends Model
         'paid_at' => 'datetime',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function borrowing()
+    public function borrowHistory(): BelongsTo
     {
-        return $this->belongsTo(BorrowHistory::class);
+        return $this->belongsTo(BorrowHistory::class, 'borrowing_id');
     }
 
-    public function handler()
+    public function handler(): BelongsTo
     {
-        return $this->belongsTo(Admin::class, 'handled_by'); // updated to match FK
+        return $this->belongsTo(Admin::class, 'handled_by');
     }
 
     // Scopes

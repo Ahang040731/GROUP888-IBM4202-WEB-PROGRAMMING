@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany; 
 
 class User extends Model
 {
@@ -20,6 +21,10 @@ class User extends Model
     {
         return $this->belongsTo(Account::class);
     }
+    public function carts(): HasMany
+    {   
+        return $this->hasMany(Cart::class);
+    }   
 
     public function favourites()
     {

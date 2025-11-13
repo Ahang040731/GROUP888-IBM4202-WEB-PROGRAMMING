@@ -157,5 +157,11 @@ Route::get('/admin/homepage', function() {
     return view('admin.homepage');
 })->name('admin.homepage');
 
+use App\Http\Controllers\AdminFinesController;
+
+Route::prefix('admin')->group(function () {
+    Route::get('/fines', [AdminFinesController::class, 'index'])->name('admin.fines.index');
+});
+
 
 ?>

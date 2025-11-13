@@ -320,6 +320,42 @@
         transform: translateY(-5px);
       }
     }
+
+    /* Cart Button Styles */
+    .cart-btn {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .cart-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #ef4444;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 10px;
+      border: 2px solid #667eea;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased" x-data="{ 
@@ -354,6 +390,23 @@
 
       <!-- Right Section -->
       <div class="flex items-center gap-4">
+        <!-- Cart Button -->
+        @auth
+        <a href="{{ route('client.cart.index') }}" class="cart-btn relative">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" 
+               viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+          @php
+            $cartCount = auth()->user()->user ? auth()->user()->user->carts()->count() : 0;
+          @endphp
+          @if($cartCount > 0)
+            <span class="cart-badge">{{ $cartCount }}</span>
+          @endif
+        </a>
+        @endauth
+
         <!-- Notifications -->
         <div class="relative hidden md:block">
           <button class="menu-btn relative" @click="notifications = 0">
@@ -375,7 +428,6 @@
                 $photoPath = null;
 
                 if ($account) {
-                    // if you have isAdmin() / isUser() helper on Account:
                     if (method_exists($account, 'isAdmin') && $account->isAdmin()) {
                         $profile = $account->admin;
                     } else {
@@ -387,16 +439,13 @@
             @endphp
 
             @if($account && $photoPath)
-                {{-- Logged in & has custom photo --}}
                 <img src="{{ asset('storage/' . $photoPath) }}"
-                    class="avatar-img rounded-full object-cover" alt="Profile">
+                    class="w-full h-full rounded-full object-cover" alt="Profile">
             @elseif($account)
-                {{-- Logged in but no custom photo --}}
                 <img src="{{ asset('images/default_profile.png') }}"
-                    class="avatar-img rounded-full object-cover" alt="Default Profile">
+                    class="w-full h-full rounded-full object-cover" alt="Default Profile">
             @else
-                {{-- Guest --}}
-                <span class="avatar-initial rounded-full">G</span>
+                <span>G</span>
             @endif
         </div>
 
@@ -457,9 +506,9 @@
   <div class="max-w-screen-2xl mx-auto flex">
     <!-- Sidebar (Desktop) -->
     <aside class="hidden md:block w-64 sidebar
-         md:sticky md:top-16          <!-- stick under 64px header -->
-         h-[calc(100vh-4rem)]         <!-- 100vh - 64px -->
-         overflow-y-auto              <!-- its own scrollbar -->
+         md:sticky md:top-16
+         h-[calc(100vh-4rem)]
+         overflow-y-auto
          z-40">
       <nav class="p-4 space-y-2">
         <a href="{{ url('/') }}" 
@@ -469,7 +518,7 @@
           <span>Home Page</span>
         </a>
         
-        <a href="{{ route('books.index') ?? '#' }}" 
+        <a href="{{ route('client.books.index') ?? '#' }}" 
            class="nav-link"
            :class="{ 'active': currentPage.includes('books') }">
           <span class="nav-icon">📖</span>
@@ -530,7 +579,7 @@
             <span>Home Page</span>
           </a>
           
-          <a href="{{ route('books.index') ?? '#' }}" 
+          <a href="{{ route('client.books.index') ?? '#' }}" 
              class="nav-link"
              @click="sidebarOpen=false">
             <span class="nav-icon">📖</span>
@@ -621,7 +670,6 @@
   </footer>
 
   <script>
-    // Initialize tooltips and add interactivity
     document.addEventListener('alpine:init', () => {
       Alpine.store('app', {
         loading: false,
@@ -636,7 +684,6 @@
       });
     });
 
-    // Add smooth scroll behavior
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();

@@ -30,11 +30,11 @@ class Book extends Model
 
         public function authors()
     {
-        return $this->belongsToMany(Author::class, 'books_author')
+        return $this->belongsToMany(Author::class, 'book_authors')
                     ->using(BookAuthor::class)  // tell Laravel to use your custom pivot model
                     ->withPivot(['author_order', 'role'])
                     ->withTimestamps()
-                    ->orderBy('books_author.author_order');
+                    ->orderBy('book_authors.author_order');
     }
 
 

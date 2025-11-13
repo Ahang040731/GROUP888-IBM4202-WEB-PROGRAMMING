@@ -15,6 +15,7 @@ use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\AdminBorrowHistoryController;
 use App\Http\Controllers\AdminFinesController;
+use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,9 +59,16 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/homepage', [DashboardController::class, 'index'])->name('client.homepage.index');
     
-    // Books
-    Route::get('/books', [BookController::class, 'index'])->name('books.index');
-    Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show');
+    // Book Routes
+    Route::get('/books', [BookController::class, 'index'])->name('client.books.index');
+    Route::get('/books/{book}', [BookController::class, 'show'])->name('client.books.show');
+    
+    // Cart Routes
+    Route::get('/cart', [CartController::class, 'index'])->name('client.cart.index');
+    Route::post('/cart/{book}', [CartController::class, 'store'])->name('client.cart.store');
+    Route::patch('/cart/{cart}', [CartController::class, 'update'])->name('client.cart.update');
+    Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('client.cart.destroy');
+    Route::delete('/cart', [CartController::class, 'clear'])->name('client.cart.clear');
     
     // Borrow History
     Route::get('/borrowhistory', [BorrowHistoryController::class, 'index'])
@@ -69,10 +77,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('client.borrowhistory.extend');
     Route::post('/borrowhistory/{borrow}/cancel', [BorrowHistoryController::class, 'cancel'])
         ->name('client.borrowhistory.cancel');
-    
-    // Borrowed/Returned Books
-    // Route::get('/borrowed', [BookController::class, 'borrowed'])->name('borrowed.index');
-    // Route::get('/returned', [BookController::class, 'returned'])->name('returned.index');
     
     // Fines
     Route::get('/fines', [FinesController::class, 'index'])->name('fines.index');
@@ -141,4 +145,3 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/profile', [AdminProfileController::class, 'index'])->name('admin.profile.index');
     Route::post('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
 });
-?>

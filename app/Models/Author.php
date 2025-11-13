@@ -21,7 +21,7 @@ class Author extends Model
         return $this->belongsToMany(Book::class, 'book_authors')
                     ->withPivot(['author_order', 'role'])
                     ->withTimestamps()
-                    ->orderBy('book_authors.author_order');
+                    ->orderBy('books_authors.author_order');
     }
 
     /* ========================

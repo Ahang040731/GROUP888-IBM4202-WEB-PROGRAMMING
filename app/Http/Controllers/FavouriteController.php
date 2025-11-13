@@ -7,7 +7,7 @@ use App\Models\Book;
 use App\Models\Favourite;
 use Illuminate\Http\Request;
 
-class FavoriteController extends Controller
+class FavouriteController extends Controller
 {
     public function index()
     {
@@ -25,7 +25,7 @@ class FavoriteController extends Controller
             ->orderBy('book_name')
             ->paginate(20);
 
-        return view('client.favorites.index', compact('books'));
+        return view('client.favourites.index', compact('books'));
     }
 
      /** Toggle favorite / unfavorite */
@@ -49,13 +49,13 @@ class FavoriteController extends Controller
             Favourite::where('user_id', $userId)
                 ->where('book_id', $book->id)
                 ->delete();
-            return back()->with('success', 'Removed from favorites.');
+            return back()->with('success', 'Removed from favourites.');
         } else {
             Favourite::create([
                 'user_id' => $userId,
                 'book_id' => $book->id,
             ]);
-            return back()->with('success', 'Added to favorites.');
+            return back()->with('success', 'Added to favourites.');
         }
     }
 }

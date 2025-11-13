@@ -137,10 +137,10 @@
                         {{ $book->available_copies > 0 ? 'Available' : 'Unavailable' }}
                     </div>
                     
-                    <!-- Favorite Button -->
-                    <form action="{{ route('favorites.toggle', $book->id) }}" method="POST" class="favorite-form">
+                    <!-- Favourite Button -->
+                    <form action="{{ route('favourites.toggle', $book->id) }}" method="POST" class="favourite-form">
                         @csrf
-                        <button type="submit" class="favorite-btn {{ $book->is_favorited ? 'active' : '' }}">
+                        <button type="submit" class="favourite-btn {{ $book->is_favorited ? 'active' : '' }}">
                             <svg fill="{{ $book->is_favorited ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
@@ -511,13 +511,13 @@
         color: white;
     }
 
-    .favorite-form {
+    .favourite-form {
         position: absolute;
         top: 12px;
         left: 12px;
     }
 
-    .favorite-btn {
+    .favourite-btn {
         width: 40px;
         height: 40px;
         border-radius: 50%;
@@ -531,20 +531,20 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .favorite-btn svg {
+    .favourite-btn svg {
         width: 20px;
         height: 20px;
         color: #ef4444;
     }
 
-    .favorite-btn:hover {
+    .favourite-btn:hover {
         transform: scale(1.1);
     }
 
-    .favorite-btn.active {
+    .favourite-btn.active {
         background: white;}
 
-    .favorite-btn.active svg {
+    .favourite-btn.active svg {
         color: #ef4444;
     }
 
@@ -804,11 +804,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Add loading animation to favorite buttons
-    const favoriteForms = document.querySelectorAll('.favorite-form');
+    // Add loading animation to favourite buttons
+    const favoriteForms = document.querySelectorAll('.favourite-form');
     favoriteForms.forEach(form => {
         form.addEventListener('submit', function(e) {
-            const button = this.querySelector('.favorite-btn');
+            const button = this.querySelector('.favourite-btn');
             button.style.pointerEvents = 'none';
             button.style.opacity = '0.6';
             
@@ -951,14 +951,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 
-/* Loading spinner for favorite button */
+/* Loading spinner for favourite button */
 @keyframes spin {
     to {
         transform: rotate(360deg);
     }
 }
 
-.favorite-btn.loading::after {
+.favourite-btn.loading::after {
     content: '';
     position: absolute;
     width: 16px;
@@ -1016,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .filter-select:focus,
 .search-btn:focus,
 .view-details-btn:focus,
-.favorite-btn:focus {
+.favourite-btn:focus {
     outline: 3px solid rgba(102, 126, 234, 0.5);
     outline-offset: 2px;
 }
@@ -1026,7 +1026,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .hero-section,
     .search-panel,
     .stats-container,
-    .favorite-btn {
+    .favourite-btn {
         display: none;
     }
     

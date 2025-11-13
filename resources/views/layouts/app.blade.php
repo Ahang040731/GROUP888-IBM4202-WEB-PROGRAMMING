@@ -491,11 +491,11 @@
           <span>Fines</span>
         </a>
         
-        <a href="{{ route('client.favorites.index') ?? '#' }}" 
+        <a href="{{ route('client.favourites.index') ?? '#' }}" 
            class="nav-link"
-           :class="{ 'active': currentPage.includes('favorites') }">
+           :class="{ 'active': currentPage.includes('favourites') }">
           <span class="nav-icon">❤️</span>
-          <span>Favorites</span>
+          <span>Favourites</span>
         </a>
 
         <div class="border-t border-gray-200 my-4"></div>
@@ -552,11 +552,11 @@
             <span>Fines</span>
           </a>
           
-          <a href="{{ route('client.favorites.index') ?? '#' }}" 
+          <a href="{{ route('client.favourites.index') ?? '#' }}" 
              class="nav-link"
              @click="sidebarOpen=false">
             <span class="nav-icon">❤️</span>
-            <span>Favorites</span>
+            <span>Favourites</span>
           </a>
 
           <div class="border-t border-gray-200 my-4"></div>

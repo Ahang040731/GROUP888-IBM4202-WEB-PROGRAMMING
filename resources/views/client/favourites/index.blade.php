@@ -11,7 +11,7 @@
 
   @if(($books ?? collect())->isEmpty())
     <div class="bg-white rounded-xl border p-8 text-center text-slate-600">
-      No favorites yet. Go add some ❤️
+      No favourites yet. Go add some ❤️
     </div>
   @else
     <div class="books-section">
@@ -20,11 +20,11 @@
         <div class="book-card animate-fade-in-up" style="animation-delay: {{ ($index % 12) * 0.04 }}s">
           <div class="book-image-wrapper">
 
-            {{-- Favorite toggle (unfavorite) --}}
-            <form method="POST" action="{{ route('favorites.toggle', $book->id) }}" 
-                  class="favorite-form favorite-form-right">
+            {{-- Favourites toggle (unfavourite) --}}
+            <form method="POST" action="{{ route('favourites.toggle', $book->id) }}" 
+                  class="favourite-form favourite-form-right">
               @csrf
-              <button type="submit" class="favorite-btn {{ $book->is_favorited ? 'active' : '' }}">
+              <button type="submit" class="favourite-btn {{ $book->is_favorited ? 'active' : '' }}">
                 <svg fill="{{ $book->is_favorited ? 'currentColor' : 'none' }}"
                      stroke="currentColor"
                      viewBox="0 0 24 24">
@@ -198,15 +198,15 @@
       color: white;
   }
 
-  /* Favorite button – top-right */
-  .favorite-form.favorite-form-right {
+  /* Favourite button – top-right */
+  .favourite-form.favourite-form-right {
       position: absolute;
       top: 10px;
       right: 10px;
       z-index: 2; /* important so it stays above the image */
   }
 
-  .favorite-btn {
+  .favourite-btn {
       width: 36px;
       height: 36px;
       border-radius: 999px;
@@ -220,22 +220,22 @@
       transition: transform 0.18s ease, box-shadow 0.18s ease;
   }
 
-  .favorite-btn:hover {
+  .favourite-btn:hover {
       transform: scale(1.08);
       box-shadow: 0 4px 12px rgba(0,0,0,0.18);
   }
 
-  .favorite-btn svg {
+  .favourite-btn svg {
       width: 18px;
       height: 18px;
       color: #d1d5db;
   }
 
-  .favorite-btn.active svg {
+  .favourite-btn.active svg {
       color: #ef4444; /* heart becomes red and filled because fill="currentColor" */
   }
 
-  .favorite-btn:hover {
+  .favourite-btn:hover {
       transform: scale(1.08);
       box-shadow: 0 4px 12px rgba(0,0,0,0.18);
   }

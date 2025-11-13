@@ -7,7 +7,6 @@ use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FinesController;
 use App\Http\Controllers\BorrowHistoryController;
-use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\AdminBookController;
@@ -80,11 +79,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/fines/{fine}/pay', [FinesController::class, 'pay'])->name('client.fines.pay');
     Route::post('/fines/{fine}/pay', [FinesController::class, 'pay'])->name('fines.pay');
     
-    // Favorites
-    Route::get('/favorites', [FavoriteController::class, 'index'])
-        ->name('client.favorites.index');
-    Route::post('/favorites/{book}/toggle', [FavoriteController::class, 'toggle'])
-        ->name('favorites.toggle');
+    // Favourites
+    Route::get('/favourites', [FavouriteController::class, 'index'])
+        ->name('client.favourites.index');
+    Route::post('/favourites/{book}/toggle', [FavouriteController::class, 'toggle'])
+        ->name('favourites.toggle');
     
     // Profile
     Route::get('/profile', [UserProfileController::class, 'show'])->name('client.profile.index');

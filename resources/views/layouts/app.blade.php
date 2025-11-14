@@ -447,6 +447,256 @@
       align-items: center;
       justify-content: center;
     }
+
+    /* Notification Dropdown Styles */
+    .notification-dropdown {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      width: 420px;
+      max-height: 600px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    .notif-header {
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .notif-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+
+    .notif-count-badge {
+      background: rgba(255, 255, 255, 0.3);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .notif-list {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    /* Notification Section Labels */
+    .notif-section-label {
+      padding: 8px 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: #f9fafb;
+      color: #6b7280;
+      border-top: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .notif-section-label.urgent {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .notif-section-label.warning {
+      background: #fffbeb;
+      color: #d97706;
+    }
+
+    .notif-section-label.due-soon {
+      background: #fef3c7;
+      color: #f59e0b;
+    }
+
+    .notif-section-label.info {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    .notif-section-label.success {
+      background: #f0fdf4;
+      color: #16a34a;
+    }
+
+    .notif-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      border-bottom: 1px solid #f3f4f6;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .notif-item:hover {
+      background: #f9fafb;
+      transform: translateX(4px);
+    }
+
+    .notif-item.urgent:hover {
+      background: #fef2f2;
+    }
+
+    .notif-item.warning:hover {
+      background: #fffbeb;
+    }
+
+    .notif-item.due-soon:hover {
+      background: #fef3c7;
+    }
+
+    .notif-item.info:hover {
+      background: #eff6ff;
+    }
+
+    .notif-item.success:hover {
+      background: #f0fdf4;
+    }
+
+    .notif-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      flex-shrink: 0;
+    }
+
+    .notif-icon.urgent {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    }
+
+    .notif-icon.warning {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    }
+
+    .notif-icon.due-soon {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    }
+
+    .notif-icon.info {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    }
+
+    .notif-icon.success {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    }
+
+    .notif-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .notif-text {
+      font-size: 0.875rem;
+      color: #1f2937;
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .notif-subtext {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    .notif-arrow {
+      margin-left: auto;
+      color: #9ca3af;
+      font-size: 1.25rem;
+      font-weight: 300;
+      flex-shrink: 0;
+    }
+
+    .notif-view-all {
+      display: block;
+      padding: 14px 20px;
+      text-align: center;
+      background: #f9fafb;
+      color: #667eea;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .notif-view-all:hover {
+      background: #f3f4f6;
+      color: #764ba2;
+    }
+
+    .notif-empty {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .notif-empty-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    .notif-empty-text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 4px;
+    }
+
+    .notif-empty-subtext {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    /* Mobile Notification Dropdown */
+    .notification-dropdown-mobile {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      width: 280px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    .notif-mobile-quick {
+      padding: 12px;
+    }
+
+    .notif-mobile-link {
+      display: block;
+      padding: 12px;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .notif-mobile-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased" x-data="{ 
@@ -481,6 +731,48 @@
 
       <!-- Right Section -->
       <div class="flex items-center gap-4">
+        <!-- Notifications (Mobile) -->
+        @auth
+        <div class="relative md:hidden" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
+          @php
+            $mobileNotifCount = 0;
+            if (auth()->user()->user) {
+              $userId = auth()->user()->user->id;
+              $mobileNotifCount = \App\Models\Fine::where('user_id', $userId)->whereIn('status', ['unpaid', 'pending'])->count() +
+                                 \App\Models\BorrowHistory::where('user_id', $userId)->whereNull('returned_at')->where('approve_status', 'approved')->where('status', 'overdue')->count() +
+                                 \App\Models\BorrowHistory::where('user_id', $userId)->where('approve_status', 'pending')->count();
+            }
+          @endphp
+          <button class="menu-btn relative" @click="notifOpen = !notifOpen">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" 
+                 viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            @if($mobileNotifCount > 0)
+              <span class="notification-badge">{{ $mobileNotifCount }}</span>
+            @endif
+          </button>
+
+          <!-- Mobile Notification Dropdown -->
+          <div x-show="notifOpen" 
+               x-cloak
+               class="notification-dropdown-mobile">
+            <div class="notif-header">
+              <h3 class="notif-title">Notifications</h3>
+              @if($mobileNotifCount > 0)
+                <span class="notif-count-badge">{{ $mobileNotifCount }}</span>
+              @endif
+            </div>
+            <div class="notif-mobile-quick">
+              <a href="{{ route('client.notifications.index') }}" class="notif-mobile-link">
+                View All Notifications →
+              </a>
+            </div>
+          </div>
+        </div>
+        @endauth
+
         <!-- Cart Button -->
         @auth
         <a href="{{ route('client.cart.index') }}" class="cart-btn relative">
@@ -499,16 +791,192 @@
         @endauth
 
         <!-- Notifications -->
-        <div class="relative hidden md:block">
-          <button class="menu-btn relative" @click="notifications = 0">
+        @auth
+        <div class="relative hidden md:block" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
+          @php
+            $notificationCount = 0;
+            $notificationItems = [];
+            if (auth()->user()->user) {
+              $userId = auth()->user()->user->id;
+              
+              // Get ALL unpaid fines
+              $unpaidFines = \App\Models\Fine::with('borrowHistory.book')
+                ->where('user_id', $userId)
+                ->whereIn('status', ['unpaid', 'pending'])
+                ->orderByDesc('created_at')
+                ->get();
+              
+              // Get ALL overdue books
+              $overdueBooks = \App\Models\BorrowHistory::with('book')
+                ->where('user_id', $userId)
+                ->whereNull('returned_at')
+                ->where('approve_status', 'approved')
+                ->where('status', 'overdue')
+                ->orderBy('due_at', 'asc')
+                ->get();
+              
+              // Get books due in next 3 days
+              $dueSoonBooks = \App\Models\BorrowHistory::with('book')
+                ->where('user_id', $userId)
+                ->whereNull('returned_at')
+                ->where('approve_status', 'approved')
+                ->where('status', 'active')
+                ->whereBetween('due_at', [now(), now()->addDays(3)])
+                ->orderBy('due_at', 'asc')
+                ->get();
+              
+              // Get ALL pending requests
+              $pendingRequests = \App\Models\BorrowHistory::with('book')
+                ->where('user_id', $userId)
+                ->where('approve_status', 'pending')
+                ->orderByDesc('created_at')
+                ->get();
+              
+              // Get recently approved (last 3 days)
+              $recentlyApproved = \App\Models\BorrowHistory::with('book')
+                ->where('user_id', $userId)
+                ->where('approve_status', 'approved')
+                ->whereNull('returned_at')
+                ->where('updated_at', '>=', now()->subDays(3))
+                ->orderByDesc('updated_at')
+                ->limit(3)
+                ->get();
+              
+              $notificationCount = $unpaidFines->count() + $overdueBooks->count() + $pendingRequests->count();
+            }
+          @endphp
+          <button class="menu-btn relative" @click="notifOpen = !notifOpen">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" 
                  viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
             </svg>
-            <span class="notification-badge" x-show="notifications > 0" x-text="notifications"></span>
+            @if($notificationCount > 0)
+              <span class="notification-badge">{{ $notificationCount }}</span>
+            @endif
           </button>
+
+          <!-- Notification Dropdown -->
+          <div x-show="notifOpen" 
+               x-cloak
+               x-transition:enter="transition ease-out duration-200"
+               x-transition:enter-start="opacity-0 scale-95"
+               x-transition:enter-end="opacity-100 scale-100"
+               x-transition:leave="transition ease-in duration-150"
+               x-transition:leave-start="opacity-100 scale-100"
+               x-transition:leave-end="opacity-0 scale-95"
+               class="notification-dropdown">
+            
+            <!-- Header -->
+            <div class="notif-header">
+              <h3 class="notif-title">Notifications</h3>
+              @if($notificationCount > 0)
+                <span class="notif-count-badge">{{ $notificationCount }}</span>
+              @endif
+            </div>
+
+            <!-- Notification List -->
+            <div class="notif-list">
+              @if($notificationCount > 0 || isset($dueSoonBooks) && $dueSoonBooks->count() > 0 || isset($recentlyApproved) && $recentlyApproved->count() > 0)
+                
+                <!-- URGENT: Overdue Books -->
+                @if(isset($overdueBooks) && $overdueBooks->count() > 0)
+                  <div class="notif-section-label urgent">🚨 Overdue ({{ $overdueBooks->count() }})</div>
+                  @foreach($overdueBooks as $borrow)
+                    <a href="{{ route('client.borrowhistory.index') }}" class="notif-item urgent">
+                      <div class="notif-icon urgent">📕</div>
+                      <div class="notif-content">
+                        <p class="notif-text"><strong>{{ \Illuminate\Support\Str::limit($borrow->book->book_name, 25) }}</strong></p>
+                        <p class="notif-subtext">{{ $borrow->late_days }} day(s) overdue - Return ASAP!</p>
+                      </div>
+                      <div class="notif-arrow">›</div>
+                    </a>
+                  @endforeach
+                @endif
+
+                <!-- WARNING: Unpaid Fines -->
+                @if(isset($unpaidFines) && $unpaidFines->count() > 0)
+                  <div class="notif-section-label warning">💰 Unpaid Fines ({{ $unpaidFines->count() }})</div>
+                  @foreach($unpaidFines as $fine)
+                    <a href="{{ route('fines.index') }}" class="notif-item warning">
+                      <div class="notif-icon warning">💳</div>
+                      <div class="notif-content">
+                        <p class="notif-text"><strong>RM {{ number_format($fine->amount, 2) }}</strong></p>
+                        <p class="notif-subtext">
+                          {{ $fine->borrowHistory->book->book_name ?? 'Fine Payment' }} - 
+                          {{ $fine->status === 'pending' ? 'Pending approval' : 'Pay now' }}
+                        </p>
+                      </div>
+                      <div class="notif-arrow">›</div>
+                    </a>
+                  @endforeach
+                @endif
+
+                <!-- INFO: Due Soon (Next 3 Days) -->
+                @if(isset($dueSoonBooks) && $dueSoonBooks->count() > 0)
+                  <div class="notif-section-label due-soon">⏰ Due Soon ({{ $dueSoonBooks->count() }})</div>
+                  @foreach($dueSoonBooks as $borrow)
+                    @php
+                      $dueDate = \Carbon\Carbon::parse($borrow->due_at);
+                      $daysUntilDue = now()->diffInDays($dueDate, false);
+                    @endphp
+                    <a href="{{ route('client.borrowhistory.index') }}" class="notif-item due-soon">
+                      <div class="notif-icon due-soon">⏰</div>
+                      <div class="notif-content">
+                        <p class="notif-text"><strong>{{ \Illuminate\Support\Str::limit($borrow->book->book_name, 25) }}</strong></p>
+                        <p class="notif-subtext">Due in {{ $daysUntilDue }} day(s) - {{ $dueDate->format('M d') }}</p>
+                      </div>
+                      <div class="notif-arrow">›</div>
+                    </a>
+                  @endforeach
+                @endif
+
+                <!-- INFO: Pending Requests -->
+                @if(isset($pendingRequests) && $pendingRequests->count() > 0)
+                  <div class="notif-section-label info">⏳ Pending Requests ({{ $pendingRequests->count() }})</div>
+                  @foreach($pendingRequests as $request)
+                    <a href="{{ route('client.borrowhistory.index') }}" class="notif-item info">
+                      <div class="notif-icon info">📗</div>
+                      <div class="notif-content">
+                        <p class="notif-text"><strong>{{ \Illuminate\Support\Str::limit($request->book->book_name, 25) }}</strong></p>
+                        <p class="notif-subtext">Awaiting admin approval</p>
+                      </div>
+                      <div class="notif-arrow">›</div>
+                    </a>
+                  @endforeach
+                @endif
+
+                <!-- SUCCESS: Recently Approved -->
+                @if(isset($recentlyApproved) && $recentlyApproved->count() > 0)
+                  <div class="notif-section-label success">✅ Recently Approved ({{ $recentlyApproved->count() }})</div>
+                  @foreach($recentlyApproved as $approved)
+                    <a href="{{ route('client.borrowhistory.index') }}" class="notif-item success">
+                      <div class="notif-icon success">✅</div>
+                      <div class="notif-content">
+                        <p class="notif-text"><strong>{{ \Illuminate\Support\Str::limit($approved->book->book_name, 25) }}</strong></p>
+                        <p class="notif-subtext">Ready to pick up!</p>
+                      </div>
+                      <div class="notif-arrow">›</div>
+                    </a>
+                  @endforeach
+                @endif
+
+                <!-- View All -->
+                <a href="{{ route('client.notifications.index') }}" class="notif-view-all">
+                  View All Notifications →
+                </a>
+              @else
+                <!-- Empty State -->
+                <div class="notif-empty">
+                  <div class="notif-empty-icon">🎉</div>
+                  <p class="notif-empty-text">You're all caught up!</p>
+                  <p class="notif-empty-subtext">No new notifications</p>
+                </div>
+              @endif
+            </div>
+          </div>
         </div>
+        @endauth
 
         <!-- User Menu -->
         <div class="user-menu" x-data="{ open: false }" @click.away="open = false">

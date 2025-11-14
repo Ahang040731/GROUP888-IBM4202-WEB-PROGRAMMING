@@ -18,6 +18,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminFinesController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CreditController;
+use App\Http\Controllers\NotificationController;
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
@@ -71,7 +72,9 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/cart/{cart}', [CartController::class, 'update'])->name('client.cart.update');
     Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('client.cart.destroy');
     Route::delete('/cart', [CartController::class, 'clear'])->name('client.cart.clear');
-
+    // Inside Route::middleware(['auth'])->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('client.notifications.index');
+    Route::get('/notifications/count', [NotificationController::class, 'count'])->name('client.notifications.count');
     // Credit Routes
     Route::get('/credit', [CreditController::class, 'index'])->name('client.credit.index');
     Route::get('/credit/topup', [CreditController::class, 'topup'])->name('client.credit.topup');
@@ -120,7 +123,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         Route::get('/books/{book}/edit', [AdminBookController::class, 'edit'])->name('admin.books.edit');
         Route::put('/books/{book}', [AdminBookController::class, 'update'])->name('admin.books.update');
         Route::delete('/books/{book}', [AdminBookController::class, 'destroy'])->name('admin.books.destroy');
-    
+
+
     // BookCopy Management
         Route::post('/books/{book}/copies', [AdminBookController::class, 'addCopy'])->name('admin.books.copies.add');
         Route::delete('/books/copies/{copy}', [AdminBookController::class, 'deleteCopy'])->name('admin.books.copies.destroy');

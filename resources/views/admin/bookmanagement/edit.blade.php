@@ -68,7 +68,7 @@
                     <table class="table table-bordered table-hover text-center align-middle">
                         <thead>
                             <tr>
-                                <th>Copy ID</th>
+                                <th>Copy Barcode</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -76,7 +76,7 @@
                         <tbody>
                             @foreach($book->copies as $copy)
                                 <tr>
-                                    <td>{{ $copy->id }}</td>
+                                    <td>{{ $copy->barcode }}</td>
                                     <td>{{ ucfirst($copy->status) }}</td>
                                     <td class="d-flex justify-content-center gap-2 flex-wrap">
                                         @if($copy->status != 'available')

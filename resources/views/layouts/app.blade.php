@@ -513,7 +513,7 @@
       <nav class="p-4 space-y-2">
         <a href="{{ url('/') }}" 
            class="nav-link"
-           :class="{ 'active': currentPage === 'homepage' }">
+           :class="{ 'active': currentPage.includes('homepage') }">
           <span class="nav-icon">🏠</span>
           <span>Home Page</span>
         </a>

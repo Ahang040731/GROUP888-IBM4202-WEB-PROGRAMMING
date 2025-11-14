@@ -19,7 +19,13 @@
           @php
             $borrowing = $fine->borrowHistory;
             $book      = $borrowing?->book;
-            $badgeClass = 'bh-badge bh-badge--overdue';
+            $status    = $fine->status;
+
+          [$statusLabel, $badgeClass] = match($status) {
+              'unpaid'  => ['Unpaid',  'bh-badge bh-badge--overdue'],
+              'pending' => ['Pending', 'bh-badge bh-badge--pending'],
+              default   => [ucfirst($status), 'bh-badge'],
+          };
           @endphp
 
           <li class="bh-card">
@@ -33,7 +39,7 @@
               <div class="bh-content">
                 <div class="bh-titlebar">
                   <h3 class="bh-title">{{ $book->book_name ?? 'Unknown Book' }}</h3>
-                  <span class="{{ $badgeClass }}">Unpaid</span>
+                  <span class="{{ $badgeClass }}">{{ $statusLabel }}</span>
                 </div>
 
                 <div class="bh-meta">
@@ -45,10 +51,27 @@
 
               {{-- Actions --}}
               <div class="bh-actions">
-                <form method="POST" action="{{ route('fines.pay', $fine->id) }}" class="pay-form inline">
-                  @csrf
-                  <button type="button" class="bh-btn bh-btn--extend pay-btn">Pay with Credit</button>
-                </form>
+                @php
+                  $borrowing = $fine->borrowHistory;
+                  $notReturned = $borrowing && $borrowing->returned_at === null;
+                @endphp
+
+                @if($notReturned)
+                    <button class="bh-btn bh-btn--ghost" style="color: red;" disabled>
+                      Return Book First
+                    </button>
+                @else
+                    <form method="POST" action="{{ route('fines.pay', $fine->id) }}" class="pay-form inline">
+                      @csrf
+                      <input type="hidden" name="method" value="cash">
+
+                      <button type="button"
+                              class="bh-btn bh-btn--extend pay-btn"
+                              data-amount="{{ number_format($fine->amount, 2) }}">
+                        Pay / Request Payment
+                      </button>
+                    </form>
+                @endif
               </div>
             </div>
           </li>
@@ -106,25 +129,68 @@
   </section>
 </div>
 @endsection
-
+@push('scripts')
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // Pay button confirmation
   document.querySelectorAll('.pay-btn').forEach(button => {
     button.addEventListener('click', e => {
-      const form = e.target.closest('.pay-form');
+      const form   = e.target.closest('.pay-form');
+      const amount = e.target.dataset.amount || '0.00';
+
       Swal.fire({
-        title: 'Pay this fine with credit?',
-        text: 'This will deduct your credit and mark the fine as paid.',
-        icon: 'question',
+        title: 'Confirm Fine Payment',
+        html: `
+          <div style="font-size:0.95rem; color:#4b5563;">
+            <div style="margin-bottom:6px;">You are about to pay:</div>
+            <div style="
+              display:inline-block;
+              padding:6px 14px;
+              border-radius:999px;
+              background:linear-gradient(90deg,#4F46E5,#8B5CF6);
+              color:#fff;
+              font-size:1.4rem;
+              font-weight:700;
+              letter-spacing:0.02em;
+              margin-bottom:8px;
+            ">
+              RM ${amount}
+            </div>
+          </div>
+        `,
+        icon: 'info',
+        input: 'select',
+        inputOptions: {
+          credit:          'Credit Balance',
+          tng:             "Touch \'n Go",
+          card:            'Debit / Credit Card',
+          online_banking:  'Online Banking',
+          cash:            'Cash at Counter'
+        },
+        inputValue: 'credit',
+        inputLabel: 'Payment Method',
         showCancelButton: true,
         confirmButtonColor: '#4F46E5',
         cancelButtonColor: '#6B7280',
-        confirmButtonText: 'Yes, pay it!',
-        cancelButtonText: 'Cancel'
+        confirmButtonText: 'Confirm Payment',
+        cancelButtonText: 'Cancel',
+        inputValidator: (value) => {
+          if (!value) {
+            return 'Please select a payment method.';
+          }
+        }
       }).then(result => {
-        if (result.isConfirmed) form.submit();
+        if (result.isConfirmed) {
+          let methodInput = form.querySelector('input[name="method"]');
+          if (!methodInput) {
+            methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = 'method';
+            form.appendChild(methodInput);
+          }
+          methodInput.value = result.value;
+          form.submit();
+        }
       });
     });
   });

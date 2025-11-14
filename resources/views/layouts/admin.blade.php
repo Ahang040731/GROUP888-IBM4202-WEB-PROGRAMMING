@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Dashboard')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             background-color: #f8fafc;
@@ -49,11 +50,12 @@
             <h4 class="text-center mb-4">📘 Admin Panel</h4>
             {{-- Navigation Links --}}
             <a href="{{ route('admin.homepage') }}" class="{{ request()->routeIs('admin.homepage') ? 'active' : '' }}">🏠 Dashboard</a>
-            <a href="{{ route('admin.books.index') }}">📚 Manage Books</a>
-            <a href="{{ route('admin.borrows.index') }}">🔄 Borrow Management</a>
-            <a href="{{ route('admin.borrowhistorymanagement.index') }}">📖 Borrow History</a>
-            <a href="{{ route('admin.usermanagement.index') }}">👥 Manage Users</a>
-            <a href="{{ route('admin.profile.index') }}">👤 Profile</a>
+            <a href="{{ route('admin.books.index') }}" class="{{ request()->routeIs('admin.books.index') ? 'active' : '' }}">📚 Manage Books</a>
+            <a href="{{ route('admin.borrows.index') }}" class="{{ request()->routeIs('admin.borrows.index') ? 'active' : '' }}">🔄 Borrow Management</a>
+            <a href="{{ route('admin.borrowhistorymanagement.index') }}" class="{{ request()->routeIs('admin.borrowhistorymanagement.index') ? 'active' : '' }}">📖 Borrow History</a>
+            <a href="{{ route('admin.fines.index') }}" class="{{ request()->routeIs('admin.fines.index') ? 'active' : '' }}">💰 Fines Management</a>
+            <a href="{{ route('admin.usermanagement.index') }}" class="{{ request()->routeIs('admin.usermanagement.index') ? 'active' : '' }}">👥 Manage Users</a>
+            <a href="{{ route('admin.profile.index') }}" class="{{ request()->routeIs('admin.profile.index') ? 'active' : '' }}">👤 Profile</a>
             <hr style="border-color: #475569;">
             
             {{-- Logout Form --}}
@@ -121,6 +123,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
 </body>
 </html>

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Fine;
-use App\Models\CreditTransaction;
 use App\Models\BorrowHistory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class FinesController extends Controller
 {
@@ -24,44 +24,62 @@ class FinesController extends Controller
         /*
         |------------------------------------------------------------------
         | 1) Auto-generate fines for overdue borrows with no fine yet
+        |    (book NOT returned yet → use today vs due_at)
         |------------------------------------------------------------------
         */
 
         $overdueBorrows = BorrowHistory::where('user_id', $userId)
             ->whereNull('returned_at')
-            ->where('due_at', '<', now())
-            ->whereDoesntHave('fine')      // uses BorrowHistory::fine()
+            ->whereNotNull('due_at')
+            ->where('due_at', '<', Carbon::now())    // ✅ use Carbon, not Symfony now()
+            ->whereDoesntHave('fine')               // assumes BorrowHistory::fine() relation
             ->get();
 
         foreach ($overdueBorrows as $borrow) {
-            // use accessor from BorrowHistory (we’ll fix it below)
-            $lateDays = $borrow->late_days;
-            $ratePerDay = config('library.fine_per_day', 1.00);
-            $amount = max(0, $lateDays * $ratePerDay);
 
-            // if somehow not late or 0 amount, skip
-            if ($amount <= 0) {
+            $dueDate = Carbon::parse($borrow->due_at);
+            $today   = Carbon::now();
+
+            // days from due date until today (absolute)
+            $daysLate = $borrow->late_days;  // <- use accessor
+
+            if ($daysLate <= 0) {
                 continue;
             }
 
-            Fine::create([
+            // fine rule: base RM5 + RM2 per late day
+            $baseFine      = 5.00;
+            $latePerDay    = 2.00;
+            $fineAmount    = $baseFine + ($daysLate * $latePerDay);
+            $fineAmount    = round($fineAmount, 2);   // ensure 2 decimals
+
+            $fine = Fine::where('borrowing_id', $borrow->id)->first();
+
+            if ($fine && $fine->status !== 'unpaid') {
+                continue;
+            }
+            
+            Fine::updateOrCreate(
+            [
+                'borrowing_id' => $borrow->id,   // UNIQUE per borrow
                 'user_id'      => $userId,
-                'borrowing_id' => $borrow->id, // ✅ matches migration + model
-                'reason'       => 'late',      // ✅ valid enum: late | lost | damage | activate | manual
-                'amount'       => $amount,
-                'status'       => 'unpaid',
+            ],
+            [
+                'reason' => 'late',
+                'amount' => $fineAmount,         // <-- update amount daily
+                'status' => 'unpaid',            // <-- still unpaid
             ]);
         }
 
         /*
         |------------------------------------------------------------------
-        | 2) Load unpaid fines (current)
+        | 2) Load unpaid + pending (current)
         |------------------------------------------------------------------
         */
 
         $current = Fine::with(['borrowHistory.book'])
             ->where('user_id', $userId)
-            ->where('status', 'unpaid')
+            ->whereIn('status', ['unpaid', 'pending'])
             ->orderBy('created_at')
             ->get();
 
@@ -88,48 +106,30 @@ class FinesController extends Controller
             abort(403, 'No user profile linked to this account.');
         }
 
-        $user = $account->user;  // User profile (has credit column)
+        $user = $account->user;
 
-        // Ensure the fine belongs to this user
+        // Make sure the fine belongs to this user
         if ($fine->user_id !== $user->id) {
             abort(403);
         }
 
-        // Only unpaid fines can be paid
+        // ❗ block payment if book not returned
+        if ($fine->borrowHistory && $fine->borrowHistory->returned_at === null) {
+            return back()->with('error', 'You must return the book before paying the fine.');
+        }
+
         if ($fine->status !== 'unpaid') {
-            return back()->with('error', 'This fine has already been processed.');
+            return back()->with('error', 'This fine is already being processed or completed.');
         }
 
-        // Get payment method (default credit)
-        $method = $request->input('method', 'credit');
+        $method = $request->input('method', 'cash');
 
-        // Handle credit payment
-        if ($method === 'credit') {
-            if ($user->credit < $fine->amount) {
-                return back()->with('error', 'Insufficient credit to pay this fine.');
-            }
-
-            // Deduct user credit
-            $user->decrement('credit', $fine->amount);
-
-            // Record credit transaction
-            CreditTransaction::create([
-                'user_id'   => $user->id,
-                'delta'     => -$fine->amount,
-                'reason'    => 'fine',
-                'method'    => 'system',
-                'reference' => 'FINE#'.$fine->id,
-            ]);
-        }
-
-        // Update fine record
         $fine->update([
-            'status'          => 'paid',
-            'paid_at'         => now(),
+            'status'          => 'pending',
             'method'          => $method,
-            'transaction_ref' => 'TXN'.time(),
+            'transaction_ref' => 'REQ-' . $fine->id . '-' . time(),
         ]);
 
-        return back()->with('success', 'Fine has been paid successfully.');
+        return back()->with('success', 'Your payment request has been sent to admin for approval.');
     }
 }

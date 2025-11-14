@@ -18,10 +18,10 @@ return new class extends Migration
         $table->foreignId('borrowing_id')->nullable()
             ->constrained('borrow_history')->nullOnDelete(); // tie to a loan if applicable
 
-        $table->enum('reason', ['late', 'lost', 'damage', 'activate', 'manual'])->default('late');
+        $table->enum('reason', ['late', 'lost', 'damage', 'activate', 'manual', 'other'])->default('late');
         $table->decimal('amount', 8, 2);
 
-        $table->enum('status', ['unpaid', 'paid', 'waived', 'reversed'])->default('unpaid');
+        $table->enum('status', ['unpaid', 'pending', 'paid', 'waived', 'reversed'])->default('unpaid');
 
         $table->enum('method', ['credit', 'card', 'online_banking', 'tng', 'cash'])->nullable();
         $table->string('transaction_ref')->nullable(); // gateway ref / receipt no.

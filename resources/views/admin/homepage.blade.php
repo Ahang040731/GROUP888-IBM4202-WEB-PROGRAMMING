@@ -15,7 +15,7 @@
             <div class="card text-center border-0 shadow-sm card-hover">
                 <div class="card-body">
                     <h5 class="text-muted">Total Books</h5>
-                    <h3 class="fw-bold text-primary">{{ $totalBooks ?? 120 }}</h3>
+                    <h3 class="fw-bold text-primary">{{ $totalBooks ?? 0 }}</h3>
                 </div>
             </div>
         </div>
@@ -23,7 +23,7 @@
             <div class="card text-center border-0 shadow-sm card-hover">
                 <div class="card-body">
                     <h5 class="text-muted">Active Users</h5>
-                    <h3 class="fw-bold text-success">{{ $totalUsers ?? 45 }}</h3>
+                    <h3 class="fw-bold text-success">{{ $totalUsers ?? 0 }}</h3>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
             <div class="card text-center border-0 shadow-sm card-hover">
                 <div class="card-body">
                     <h5 class="text-muted">Books Borrowed</h5>
-                    <h3 class="fw-bold text-warning">{{ $borrowedBooks ?? 32 }}</h3>
+                    <h3 class="fw-bold text-warning">{{ $borrowedBooks ?? 0 }}</h3>
                 </div>
             </div>
         </div>

@@ -93,10 +93,12 @@ class BorrowController extends Controller
                 return redirect()->back()->with('warning', 'Already returned.');
             }
 
+            // 1) Mark as returned
             $borrow->returned_at = Carbon::now();
-            $borrow->status = 'returned';
+            $borrow->status      = 'returned';
             $borrow->save();
 
+            // 2) Free the copy
             if ($borrow->copy_id) {
                 $copy = BookCopy::find($borrow->copy_id);
                 if ($copy) {
@@ -105,22 +107,42 @@ class BorrowController extends Controller
                 }
             }
 
+            // 3) Increase available copies on the book
             $book = Book::find($borrow->book_id);
             if ($book) {
                 $book->available_copies = ($book->available_copies ?? 0) + 1;
                 $book->save();
             }
 
-            if ($borrow->due_at && $borrow->returned_at->greaterThan($borrow->due_at)) {
-                $daysLate = $borrow->returned_at->diffInDays($borrow->due_at);
-                $fineAmount = $daysLate * 1.0;
-                Fine::create([
-                    'user_id' => $borrow->user_id,
-                    'borrowing_id' => $borrow->id,
-                    'reason' => 'late',
-                    'amount' => $fineAmount,
-                    'status' => 'unpaid',
-                ]);
+            // 4) Late fine logic (use accessor late_days)
+            $borrow->refresh();                  // ensure latest dates
+            $daysLate = $borrow->late_days;      // from your BorrowHistory model
+
+            if ($daysLate > 0) {
+                $baseFine   = 5.00;              // base RM5
+                $latePerDay = 2.00;              // +RM2 per late day
+                $fineAmount = round($baseFine + ($daysLate * $latePerDay), 2);
+
+                // If a fine already exists for this borrow, update it
+                // If not, create it
+                $fine = Fine::where('borrowing_id', $borrow->id)->first();
+
+                // If the fine already exists but is not unpaid (paid/waived/etc), don't modify it
+                if ($fine && $fine->status !== 'unpaid') {
+                    // do nothing
+                } else {
+                    Fine::updateOrCreate(
+                        [
+                            'borrowing_id' => $borrow->id,
+                            'user_id'      => $borrow->user_id,
+                        ],
+                        [
+                            'reason' => 'late',
+                            'amount' => $fineAmount,
+                            'status' => 'unpaid',
+                        ]
+                    );
+                }
             }
 
             DB::commit();
@@ -130,4 +152,5 @@ class BorrowController extends Controller
             return redirect()->back()->with('error', 'Error marking returned: ' . $e->getMessage());
         }
     }
+
 }

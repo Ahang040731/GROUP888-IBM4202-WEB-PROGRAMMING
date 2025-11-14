@@ -325,11 +325,6 @@
 
 <style>
 /* ==================== BASE STYLES ==================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 .dashboard-container {
     min-height: 100vh;

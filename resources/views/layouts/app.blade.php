@@ -1481,7 +1481,7 @@
             </a>
 
             <a href="{{ route('client.favourites.index') }}" 
-               class="nav-link {{ request()->routeIs('favourites.*') ? 'active' : '' }}">
+               class="nav-link {{ request()->routeIs('client.favourites.*') ? 'active' : '' }}">
               <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
@@ -1514,7 +1514,7 @@
             </a>
 
             <a href="{{ route('client.credit.topup') }}" 
-               class="nav-link {{ request()->routeIs('client.topup.*') ? 'active' : '' }}">
+               class="nav-link {{ request()->routeIs('client.credit.topup') ? 'active' : '' }}">
               <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>

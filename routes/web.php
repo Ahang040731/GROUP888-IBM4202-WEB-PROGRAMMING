@@ -67,18 +67,18 @@ Route::middleware(['auth'])->group(function () {
     
     // Cart Routes
     Route::get('/cart', [CartController::class, 'index'])->name('client.cart.index');
-    Route::post('/cart/submit', [CartController::class, 'submitBorrowRequest'])->name('client.cart.submit');
-    Route::post('/cart/{book}', [CartController::class, 'store'])->name('client.cart.store');
-    Route::patch('/cart/{cart}', [CartController::class, 'update'])->name('client.cart.update');
-    Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('client.cart.destroy');
-    Route::delete('/cart', [CartController::class, 'clear'])->name('client.cart.clear');
+        Route::post('/cart/submit', [CartController::class, 'submitBorrowRequest'])->name('client.cart.submit');
+        Route::post('/cart/{book}', [CartController::class, 'store'])->name('client.cart.store');
+        Route::patch('/cart/{cart}', [CartController::class, 'update'])->name('client.cart.update');
+        Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('client.cart.destroy');
+        Route::delete('/cart', [CartController::class, 'clear'])->name('client.cart.clear');
     // Inside Route::middleware(['auth'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('client.notifications.index');
-    Route::get('/notifications/count', [NotificationController::class, 'count'])->name('client.notifications.count');
+        Route::get('/notifications/count', [NotificationController::class, 'count'])->name('client.notifications.count');
     // Credit Routes
     Route::get('/credit', [CreditController::class, 'index'])->name('client.credit.index');
-    Route::get('/credit/topup', [CreditController::class, 'topup'])->name('client.credit.topup');
-    Route::post('/credit/topup', [CreditController::class, 'processTopup'])->name('client.credit.process-topup');
+        Route::get('/credit/topup', [CreditController::class, 'topup'])->name('client.credit.topup');
+        Route::post('/credit/topup', [CreditController::class, 'processTopup'])->name('client.credit.process-topup');
         
     // Borrow History
     Route::get('/borrowhistory', [BorrowHistoryController::class, 'index'])->name('client.borrowhistory.index');

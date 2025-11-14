@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -14,7 +15,7 @@ class BookController extends Controller
     public function index(Request $request): View
     {
         $query = Book::with(['authors', 'copies']);
-        
+
         // Search by name or author
         if ($request->filled('search')) {
             $search = $request->search;
@@ -24,17 +25,17 @@ class BookController extends Controller
                   ->orWhere('description', 'like', "%{$search}%");
             });
         }
-        
+
         // Filter by category
         if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
-        
+
         // Filter by availability
-        if ($request->filled('available')) {
+        if ($request->filled('available') && $request->available == '1') {
             $query->where('available_copies', '>', 0);
         }
-        
+
         // Sort options
         $sortBy = $request->get('sort', 'book_name');
         $sortOrder = $request->get('order', 'asc');
@@ -52,7 +53,7 @@ class BookController extends Controller
             default:
                 $query->orderBy('book_name', $sortOrder);
         }
-        
+
         $books = $query->paginate(12)->withQueryString();
         
         // Get all categories for filter
@@ -61,16 +62,13 @@ class BookController extends Controller
             ->filter()
             ->sort()
             ->values();
-        
-        // Get cart book IDs for authenticated users
-        $cartBookIds = [];
-        if (auth()->check() && auth()->user()->user) {
-            $cartBookIds = auth()->user()->user->carts()->pluck('book_id')->toArray();
-        }
-        
+
+        // Get user's cart book IDs
+        $cartBookIds = auth()->user()->user->carts()->pluck('book_id')->toArray();
+
         return view('client.book.index', compact('books', 'categories', 'cartBookIds'));
     }
-    
+
     /**
      * Display the specified book.
      */
@@ -78,31 +76,32 @@ class BookController extends Controller
     {
         $book->load(['authors', 'copies']);
         
-        // Get available copies
+        // Get available copies (limited to 10 for display)
         $availableCopies = $book->copies()
             ->where('status', 'available')
+            ->limit(10)
             ->get();
-        
-        // Check if user has this in cart (if authenticated)
-        $inCart = false;
-        if (auth()->check() && auth()->user()->user) {
-            $inCart = auth()->user()->user->carts()
-                ->where('book_id', $book->id)
-                ->exists();
-        }
-        
-        // Check if user has favorited (if authenticated)
-        $isFavorite = false;
-        if (auth()->check() && auth()->user()->user) {
-            $isFavorite = auth()->user()->user->favourites()
-                ->where('book_id', $book->id)
-                ->exists();
-        }
-        
+
+        // Get total count of available copies
+        $totalAvailableCopies = $book->copies()
+            ->where('status', 'available')
+            ->count();
+
+        // Check if user has this in cart
+        $cartItem = auth()->user()->user->carts()
+            ->where('book_id', $book->id)
+            ->first();
+
+        // Check if user has favorited
+        $isFavorite = auth()->user()->user->favourites()
+            ->where('book_id', $book->id)
+            ->exists();
+
         return view('client.book.show', compact(
             'book',
             'availableCopies',
-            'inCart',
+            'totalAvailableCopies',
+            'cartItem',
             'isFavorite'
         ));
     }

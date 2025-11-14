@@ -66,10 +66,12 @@ Route::middleware(['auth'])->group(function () {
     
     // Cart Routes
     Route::get('/cart', [CartController::class, 'index'])->name('client.cart.index');
-        Route::post('/cart/{book}', [CartController::class, 'store'])->name('client.cart.store');
-        Route::patch('/cart/{cart}', [CartController::class, 'update'])->name('client.cart.update');
-        Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('client.cart.destroy');
-        Route::delete('/cart', [CartController::class, 'clear'])->name('client.cart.clear');
+    Route::post('/cart/submit', [CartController::class, 'submitBorrowRequest'])->name('client.cart.submit');
+    Route::post('/cart/{book}', [CartController::class, 'store'])->name('client.cart.store');
+    Route::patch('/cart/{cart}', [CartController::class, 'update'])->name('client.cart.update');
+    Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('client.cart.destroy');
+    Route::delete('/cart', [CartController::class, 'clear'])->name('client.cart.clear');
+
     
     // Borrow History
     Route::get('/borrowhistory', [BorrowHistoryController::class, 'index'])->name('client.borrowhistory.index');

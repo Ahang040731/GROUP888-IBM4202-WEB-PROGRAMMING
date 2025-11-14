@@ -33,7 +33,7 @@
 
                     <!-- Action Buttons -->
                     <div class="mt-6 space-y-3">
-                        @if($cartItem)
+                        @if(isset($cartItem) && $cartItem)
                             <div class="bg-gray-100 border border-gray-300 rounded-lg p-4">
                                 <p class="text-sm text-gray-600 mb-2">Already in cart ({{ $cartItem->quantity }} {{ $cartItem->quantity > 1 ? 'copies' : 'copy' }})</p>
                                 <a href="{{ route('client.cart.index') }}" class="block w-full px-4 py-3 bg-blue-600 text-white text-center font-medium rounded-lg hover:bg-blue-700 transition">
@@ -63,19 +63,16 @@
                         @endif
 
                         <!-- Favorite Button -->
-                        <form action="{{ $isFavorite ? route('client.favourites.destroy', $book) : route('client.favourites.store', $book) }}" method="POST">
+                        <form action="{{ route('favourites.toggle', $book) }}" method="POST">
                             @csrf
-                            @if($isFavorite)
-                                @method('DELETE')
-                            @endif
                             <button 
                                 type="submit"
-                                class="w-full px-4 py-3 {{ $isFavorite ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} font-medium rounded-lg transition flex items-center justify-center gap-2"
+                                class="w-full px-4 py-3 {{ isset($isFavorite) && $isFavorite ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} font-medium rounded-lg transition flex items-center justify-center gap-2"
                             >
-                                <svg class="w-5 h-5" fill="{{ $isFavorite ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5" fill="{{ isset($isFavorite) && $isFavorite ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                 </svg>
-                                {{ $isFavorite ? 'Remove from Favorites' : 'Add to Favorites' }}
+                                {{ isset($isFavorite) && $isFavorite ? 'Remove from Favorites' : 'Add to Favorites' }}
                             </button>
                         </form>
                     </div>
@@ -141,7 +138,12 @@
                 <!-- Available Copies List -->
                 @if($availableCopies->count() > 0)
                     <div class="mb-8">
-                        <h3 class="text-xl font-bold text-gray-800 mb-3">Available Copies</h3>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">
+                            Available Copies 
+                            @if($totalAvailableCopies > 10)
+                                <span class="text-sm font-normal text-gray-600">(Showing 10 of {{ $totalAvailableCopies }})</span>
+                            @endif
+                        </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             @foreach($availableCopies as $copy)
                                 <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
@@ -155,6 +157,11 @@
                                 </div>
                             @endforeach
                         </div>
+                        @if($totalAvailableCopies > 10)
+                            <p class="mt-3 text-sm text-gray-600 text-center">
+                                + {{ $totalAvailableCopies - 10 }} more copies available
+                            </p>
+                        @endif
                     </div>
                 @endif
 

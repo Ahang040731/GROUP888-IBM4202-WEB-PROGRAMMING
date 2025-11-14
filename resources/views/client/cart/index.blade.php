@@ -44,77 +44,7 @@
                                 <form action="{{ route('client.cart.clear') }}" method="POST" onsubmit="return confirm('Are you sure you want to clear your cart?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button 
-                            class="w-full px-6 py-3 bg-gray-400 text-white font-semibold rounded-lg cursor-not-allowed"
-                            disabled
-                        >
-                            Cannot Submit Request
-                        </button>
-                    @else
-                        <button 
-                            type="button"
-                            onclick="alert('Borrow request functionality coming soon!')"
-                            class="w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
-                        >
-                            Submit Borrow Request
-                        </button>
-                    @endif
-
-                    <p class="text-xs text-gray-500 text-center mt-4">
-                        You can borrow up to 3 copies per book and have a maximum of 10 items in your cart
-                    </p>
-                </div>
-            </div>
-        </div>
-    @else
-        <!-- Empty Cart -->
-        <div class="bg-white rounded-lg shadow-md p-12 text-center">
-            <svg class="mx-auto h-24 w-24 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            </svg>
-            <h3 class="text-2xl font-semibold text-gray-800 mb-2">Your cart is empty</h3>
-            <p class="text-gray-600 mb-6">Start browsing books and add them to your cart to create a borrow request</p>
-            <a 
-                href="{{ route('client.books.index') }}" 
-                class="inline-block px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
-            >
-                Browse Books
-            </a>
-        </div>
-    @endif
-</div>
-
-<!-- Flash Messages -->
-@if(session('success'))
-    <div class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-        {{ session('error') }}
-    </div>
-@endif
-
-@if(session('info'))
-    <div class="fixed bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-        {{ session('info') }}
-    </div>
-@endif
-
-<script>
-    // Auto-hide flash messages after 3 seconds
-    setTimeout(() => {
-        const messages = document.querySelectorAll('.fixed.bottom-4');
-        messages.forEach(msg => {
-            msg.style.transition = 'opacity 0.5s';
-            msg.style.opacity = '0';
-            setTimeout(() => msg.remove(), 500);
-        });
-    }, 3000);
-</script>
-@endsection type="submit" class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                    <button type="submit" class="text-sm text-red-600 hover:text-red-800 font-medium">
                                         Clear Cart
                                     </button>
                                 </form>
@@ -246,4 +176,125 @@
                                 Please remove unavailable items before proceeding
                             </p>
                         </div>
-                        <button
+                        <button 
+                            class="w-full px-6 py-3 bg-gray-400 text-white font-semibold rounded-lg cursor-not-allowed"
+                            disabled
+                        >
+                            Cannot Submit Request
+                        </button>
+                    @else
+                        <form id="borrowRequestForm" action="{{ route('client.cart.submit') }}" method="POST">
+                            @csrf
+                            <button 
+                                type="button"
+                                id="submitBorrowBtn"
+                                class="w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
+                            >
+                                Submit Borrow Request
+                            </button>
+                        </form>
+                    @endif
+
+                    <p class="text-xs text-gray-500 text-center mt-4">
+                        You can borrow up to 3 copies per book and have a maximum of 10 items in your cart
+                    </p>
+                </div>
+            </div>
+        </div>
+    @else
+        <!-- Empty Cart -->
+        <div class="bg-white rounded-lg shadow-md p-12 text-center">
+            <svg class="mx-auto h-24 w-24 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+            <h3 class="text-2xl font-semibold text-gray-800 mb-2">Your cart is empty</h3>
+            <p class="text-gray-600 mb-6">Start browsing books and add them to your cart to create a borrow request</p>
+            <a 
+                href="{{ route('client.books.index') }}" 
+                class="inline-block px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+            >
+                Browse Books
+            </a>
+        </div>
+    @endif
+</div>
+
+<!-- Flash Messages -->
+@if(session('success'))
+    <div class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if(session('info'))
+    <div class="fixed bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+        {{ session('info') }}
+    </div>
+@endif
+
+<script>
+    // Auto-hide flash messages after 3 seconds
+    setTimeout(() => {
+        const messages = document.querySelectorAll('.fixed.bottom-4');
+        messages.forEach(msg => {
+            msg.style.transition = 'opacity 0.5s';
+            msg.style.opacity = '0';
+            setTimeout(() => msg.remove(), 500);
+        });
+    }, 3000);
+
+    // Handle borrow request submission with SweetAlert
+    document.addEventListener('DOMContentLoaded', () => {
+        const submitBtn = document.getElementById('submitBorrowBtn');
+        const form = document.getElementById('borrowRequestForm');
+
+        console.log('Submit button:', submitBtn); // Debug
+        console.log('Form:', form); // Debug
+
+        if (submitBtn && form) {
+            submitBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Button clicked!'); // Debug
+                
+                // Check if SweetAlert is available
+                if (typeof Swal === 'undefined') {
+                    console.log('SweetAlert not found, using confirm'); // Debug
+                    if (confirm('Submit borrow request? This will send your request to the admin for approval.')) {
+                        form.submit();
+                    }
+                    return;
+                }
+
+                console.log('Showing SweetAlert'); // Debug
+                Swal.fire({
+                    title: 'Submit Borrow Request?',
+                    html: `
+                        <p class="text-gray-600 mb-2">Your request will be sent to the admin for approval.</p>
+                        <p class="text-sm text-gray-500">Once approved, you can collect the books from the library.</p>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#10b981',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Yes, submit request!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    console.log('SweetAlert result:', result); // Debug
+                    if (result.isConfirmed) {
+                        console.log('Confirmed, submitting form'); // Debug
+                        form.submit();
+                    }
+                });
+            });
+        } else {
+            console.error('Submit button or form not found!'); // Debug
+        }
+    });
+</script>
+@endsection

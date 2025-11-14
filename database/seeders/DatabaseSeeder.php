@@ -763,6 +763,20 @@ class DatabaseSeeder extends Seeder
             ]);
         });
 
+        // Give every user a default RM50 starting credit
+        foreach (User::all() as $user) {
+            \App\Models\CreditTransaction::create([
+                'user_id'   => $user->id,
+                'delta'     => 50.00,
+                'reason'    => 'topup',
+                'method'    => 'system',
+                'reference' => 'Initial Credit',
+            ]);
+
+            // Also update the user's credit column
+            $user->update(['credit' => 50.00]);
+        }
+
         /*
         |--------------------------------------------------------------------------
         | 4. Sample favourite

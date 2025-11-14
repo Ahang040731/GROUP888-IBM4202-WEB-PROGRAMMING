@@ -107,6 +107,8 @@ DB_CONNECTION=sqlite
 ```
 
 After finish all these config, run this in terminal under the project path:
+> [!IMPORTANT]
+> Use two terminal to run these two code
 ```
 php artisan migrate
 ```
@@ -119,8 +121,12 @@ npm i -D tailwindcss @tailwindcss/postcss
 
 ## How To Launch
 Before launch the web, ensure you are under the path of the project then run:
+> [!TIP]
+> Use two terminal to run these two code
 ```
 npm run dev
+```
+```
 php artisan serve
 ```
 the web will be launch at port:
@@ -302,6 +308,11 @@ If you have modify database's table or data you need to clear current database a
 ```
 php artisan migrate:fresh
 php artisan migrate:fresh --seed
+```
+
+This is the code for clearing the cache
+```
+php artisan optimize:clear
 ```
 
 ### Frontend  

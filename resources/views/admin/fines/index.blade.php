@@ -228,6 +228,7 @@
         return [
             'id'       => $u->id,
             'username' => $u->username,
+            'gmail'    => $u->account->email,
             'phone'    => $u->phone,
         ];
     });
@@ -430,7 +431,7 @@
                         fineUsers.forEach(u => {
                             const opt = document.createElement('option');
                             opt.value = u.id;
-                            opt.textContent = `${u.username}`;
+                            opt.textContent = `${u.username} (${u.gmail})`;
                             userSelect.appendChild(opt);
                         });
 

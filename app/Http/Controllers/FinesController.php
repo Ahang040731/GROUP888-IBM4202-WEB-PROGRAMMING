@@ -31,45 +31,54 @@ class FinesController extends Controller
         $overdueBorrows = BorrowHistory::where('user_id', $userId)
             ->whereNull('returned_at')
             ->whereNotNull('due_at')
-            ->where('due_at', '<', Carbon::now())    // ✅ use Carbon, not Symfony now()
-            ->whereDoesntHave('fine')               // assumes BorrowHistory::fine() relation
+            ->where('due_at', '<', Carbon::now())
             ->get();
+
 
         foreach ($overdueBorrows as $borrow) {
 
-            $dueDate = Carbon::parse($borrow->due_at);
-            $today   = Carbon::now();
-
-            // days from due date until today (absolute)
-            $daysLate = $borrow->late_days;  // <- use accessor
+            $daysLate = $borrow->late_days;
 
             if ($daysLate <= 0) {
                 continue;
             }
 
-            // fine rule: base RM5 + RM2 per late day
-            $baseFine      = 5.00;
-            $latePerDay    = 2.00;
-            $fineAmount    = $baseFine + ($daysLate * $latePerDay);
-            $fineAmount    = round($fineAmount, 2);   // ensure 2 decimals
+            $baseFine   = 5.00;
+            $latePerDay = 2.00;
+            $fineAmount = $baseFine + ($daysLate * $latePerDay);
 
+            // Lost books get RM100 extra
+            $isLostBorrow = ($borrow->status === 'lost');
+            if ($isLostBorrow) {
+                $fineAmount += 100.00;
+            }
+
+            $fineAmount = round($fineAmount, 2);
+            $reason     = $isLostBorrow ? 'lost' : 'late';
+
+            // Find existing fine record
             $fine = Fine::where('borrowing_id', $borrow->id)->first();
 
-            if ($fine && $fine->status !== 'unpaid') {
+            // If fine exists and is NOT unpaid → don't touch
+            if ($fine && !in_array($fine->status, ['unpaid'])) {
                 continue;
             }
-            
+
+            // Update or create (will also update amount if already unpaid)
             Fine::updateOrCreate(
-            [
-                'borrowing_id' => $borrow->id,   // UNIQUE per borrow
-                'user_id'      => $userId,
-            ],
-            [
-                'reason' => 'late',
-                'amount' => $fineAmount,         // <-- update amount daily
-                'status' => 'unpaid',            // <-- still unpaid
-            ]);
+                [
+                    'borrowing_id' => $borrow->id,
+                    'user_id'      => $userId,
+                ],
+                [
+                    'reason' => $reason,
+                    'amount' => $fineAmount,
+                    'status' => 'unpaid',
+                ]
+            );
         }
+
+
 
         /*
         |------------------------------------------------------------------
@@ -113,8 +122,13 @@ class FinesController extends Controller
             abort(403);
         }
 
-        // ❗ block payment if book not returned
-        if ($fine->borrowHistory && $fine->borrowHistory->returned_at === null) {
+        $borrowing = $fine->borrowHistory;
+
+        if (
+            $borrowing &&
+            $borrowing->returned_at === null &&
+            $borrowing->status !== 'lost'
+        ) {
             return back()->with('error', 'You must return the book before paying the fine.');
         }
 

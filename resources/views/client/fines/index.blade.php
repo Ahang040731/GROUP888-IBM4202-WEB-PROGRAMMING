@@ -20,13 +20,21 @@
             $borrowing = $fine->borrowHistory;
             $book      = $borrowing?->book;
             $status    = $fine->status;
+            $reason    = $fine->reason;
 
-          [$statusLabel, $badgeClass] = match($status) {
-              'unpaid'  => ['Unpaid',  'bh-badge bh-badge--overdue'],
-              'pending' => ['Pending', 'bh-badge bh-badge--pending'],
-              default   => [ucfirst($status), 'bh-badge'],
-          };
+            [$statusLabel, $badgeClass] = match (true) {
+                // LOST fines – special labels
+                $reason === 'lost' && $status === 'unpaid'  => ['Lost (Unpaid)',  'bh-badge bh-badge--overdue'],
+                $reason === 'lost' && $status === 'pending' => ['Lost (Pending)', 'bh-badge bh-badge--pending'],
+                $reason === 'lost' && $status === 'paid'    => ['Lost (Paid)',    'bh-badge bh-badge--active'],
+
+                // normal fines
+                $status === 'unpaid'  => ['Unpaid',  'bh-badge bh-badge--overdue'],
+                $status === 'pending' => ['Pending', 'bh-badge bh-badge--pending'],
+                default               => [ucfirst($status), 'bh-badge'],
+            };
           @endphp
+
 
           <li class="bh-card">
             <div class="bh-row">
@@ -52,11 +60,14 @@
               {{-- Actions --}}
               <div class="bh-actions">
                 @php
-                  $borrowing = $fine->borrowHistory;
-                  $notReturned = $borrowing && $borrowing->returned_at === null;
+                  $borrowing   = $fine->borrowHistory;
+                  $isLost      = $borrowing && $borrowing->status === 'lost';
+                  $mustReturn  = $borrowing
+                                && $borrowing->returned_at === null
+                                && !$isLost;
                 @endphp
 
-                @if($notReturned)
+                @if($mustReturn)
                     <button class="bh-btn bh-btn--ghost" style="color: red;" disabled>
                       Return Book First
                     </button>
@@ -92,14 +103,21 @@
           @php
             $borrowing = $fine->borrowHistory;
             $book      = $borrowing?->book;
-            $status = $fine->status;
+            $status    = $fine->status;
+            $reason    = $fine->reason;
+
             $badgeClass = match($status) {
-                'paid' => 'bh-badge bh-badge--active',
-                'waived' => 'bh-badge bh-badge--pending',
+                'paid'     => 'bh-badge bh-badge--active',
+                'waived'   => 'bh-badge bh-badge--pending',
                 'reversed' => 'bh-badge bh-badge--overdue',
-                default => 'bh-badge'
+                default    => 'bh-badge',
             };
+
+            $label = $reason === 'lost'
+                ? 'Lost (' . ucfirst($status) . ')'
+                : ucfirst($status);
           @endphp
+
 
           <li class="bh-card">
             <div class="bh-row">
@@ -110,7 +128,7 @@
               <div class="bh-content">
                 <div class="bh-titlebar">
                   <h3 class="bh-title">{{ $book->book_name ?? 'Unknown Book' }}</h3>
-                  <span class="{{ $badgeClass }}">{{ ucfirst($status) }}</span>
+                  <span class="{{ $badgeClass }}">{{ $label }}</span>
                 </div>
 
                 <div class="bh-meta">

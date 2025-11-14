@@ -15,15 +15,24 @@
       <ul class="bh-list">
         @foreach($current as $row)
           @php
-            $book = $row->book ?? null;
-            $copy = $row->copy ?? null;
+              $book = $row->book ?? null;
+              $copy = $row->copy ?? null;
 
-            $isPending = $row->approve_status === 'pending';
-            $badgeClass = $isPending
-                ? 'bh-badge bh-badge--pending'
-                : ($row->is_overdue ? 'bh-badge bh-badge--overdue' : 'bh-badge bh-badge--active');
-            $badgeText = $isPending ? 'Pending' : ($row->is_overdue ? 'Overdue' : 'Returned');
+              $isPending = $row->approve_status === 'pending';
+
+              if ($isPending) {
+                  $badgeClass = 'bh-badge bh-badge--pending';
+                  $badgeText  = 'Pending';
+              } elseif ($row->status === 'overdue' || $row->is_overdue) {
+                  $badgeClass = 'bh-badge bh-badge--overdue';
+                  $badgeText  = 'Overdue';
+              } else {
+                  // active / others that are still with user
+                  $badgeClass = 'bh-badge bh-badge--active';
+                  $badgeText  = 'Active';
+              }
           @endphp
+
 
           <li class="bh-card">
             <div class="bh-row">
@@ -97,14 +106,30 @@
       <ul class="bh-list mb-4">
         @foreach($previous as $row)
           @php
-            $book = $row->book ?? null;
-            $copy = $row->copy ?? null;
-            $isPending = $row->approve_status === 'pending';
-            $badgeClass = $isPending
-                ? 'bh-badge bh-badge--pending'
-                : ($row->is_overdue ? 'bh-badge bh-badge--overdue' : 'bh-badge bh-badge--active');
-            $badgeText = $isPending ? 'Pending' : ($row->is_overdue ? 'Overdue' : 'Active');
+              $book = $row->book ?? null;
+              $copy = $row->copy ?? null;
+
+              $status = $row->status; // 'returned', 'lost', 'overdue', etc.
+              $isPending = $row->approve_status === 'pending';
+
+              if ($isPending) {
+                  $badgeClass = 'bh-badge bh-badge--pending';
+                  $badgeText  = 'Pending';
+              } elseif ($status === 'lost') {
+                  $badgeClass = 'bh-badge bh-badge--overdue';
+                  $badgeText  = 'Lost / Missing';
+              } elseif ($status === 'returned') {
+                  $badgeClass = 'bh-badge bh-badge--returned';
+                  $badgeText  = 'Returned';
+              } elseif ($row->is_overdue) {
+                  $badgeClass = 'bh-badge bh-badge--overdue';
+                  $badgeText  = 'Overdue (Late Return)';
+              } else {
+                  $badgeClass = 'bh-badge bh-badge--active';
+                  $badgeText  = ucfirst($status);
+              }
           @endphp
+
 
           <li class="bh-card">
             <div class="bh-row">
@@ -119,7 +144,7 @@
                 <div class="bh-titlebar">
                   <h3 class="bh-title">{{ $book->book_name ?? 'Unknown Book' }}</h3>
                   <span class="bh-copy">{{ $copy->barcode ?? $row->copy_id }}</span>
-                  <span class="bh-badge bh-badge--returned">Returned</span>
+                  <span class="{{ $badgeClass }}">{{ $badgeText }}</span>
                 </div>
                 
                 {{-- “by Author” line --}}

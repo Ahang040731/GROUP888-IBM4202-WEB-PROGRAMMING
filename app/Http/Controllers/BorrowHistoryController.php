@@ -19,16 +19,20 @@ class BorrowHistoryController extends Controller
 
         $userId = $user->id;            // this matches borrow_histories.user_id
 
-        $current = BorrowHistory::with(['book','copy'])
+        $current = \App\Models\BorrowHistory::with(['book', 'copy'])
             ->where('user_id', $userId)
             ->whereNull('returned_at')
-            ->orderBy('due_at') // soonest due first
+            ->whereNotIn('status', ['lost'])
+            ->orderByDesc('borrowed_at')
             ->get();
 
-        $previous = BorrowHistory::with(['book','copy'])
+        $previous = \App\Models\BorrowHistory::with(['book', 'copy'])
             ->where('user_id', $userId)
-            ->whereNotNull('returned_at')
-            ->orderByDesc('returned_at')
+            ->where(function ($q) {
+                $q->whereNotNull('returned_at')
+                ->orWhere('status', 'lost');
+            })
+            ->orderByDesc('borrowed_at')
             ->paginate(10);
 
         return view('client.borrowhistory.index', compact('current','previous'));

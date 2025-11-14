@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->string('book_name'); // or simply 'title'
             $table->string('photo')->nullable(); // store image path or URL
-            $table->string('author')->nullable(); // optional if you also have book_authors table
+            $table->string('author')->nullable();
             $table->year('published_year')->nullable();
             $table->text('description')->nullable();
             $table->float('rating', 2, 1)->default(0); // e.g. 4.5

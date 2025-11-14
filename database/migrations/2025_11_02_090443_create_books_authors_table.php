@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('author_id')->constrained('authors')->cascadeOnDelete();
 
             // optional metadata
-            $table->unsignedTinyInteger('author_order')->default(1); // first, second...
+            $table->unsignedTinyInteger('author_order')->nullable(); // first, second...
             $table->string('role')->nullable(); // e.g. 'author','editor','translator'
 
             $table->timestamp('created_at')->useCurrent();

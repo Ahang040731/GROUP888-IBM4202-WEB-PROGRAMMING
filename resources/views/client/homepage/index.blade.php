@@ -104,7 +104,7 @@
                 </svg>
             </div>
             <div class="stat-info">
-                <h3 class="stat-number">RM {{ number_format(auth()->user()->credit ?? 0, 2) }}</h3>
+                <h3 class="stat-number"> RM {{ number_format($userCredit, 2) }}</h3>
                 <p class="stat-label">Your Credit</p>
             </div>
         </div>

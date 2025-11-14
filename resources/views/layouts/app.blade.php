@@ -99,6 +99,97 @@
       transform: scale(1.2);
     }
 
+    /* Credit Card Styles */
+    .credit-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 16px;
+      color: white;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .credit-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% {
+        transform: translate(0, 0);
+      }
+      50% {
+        transform: translate(-20%, -20%);
+      }
+    }
+
+    .credit-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    a:has(.credit-card) {
+      text-decoration: none;
+    }
+
+    .credit-label {
+      font-size: 0.75rem;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .credit-amount {
+      font-size: 2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .credit-currency {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .credit-icon {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      opacity: 0.3;
+      font-size: 3rem;
+    }
+
+    .topup-btn {
+      margin-top: 12px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      color: white;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .topup-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
     /* Mobile Menu Animation */
     .mobile-menu-enter {
       animation: slideInLeft 0.3s ease-out;
@@ -510,6 +601,29 @@
          h-[calc(100vh-4rem)]
          overflow-y-auto
          z-40">
+      
+      <!-- Credit Card Display -->
+      @auth
+        @php
+          $userCredit = auth()->user()->user?->credit ?? 0;
+        @endphp
+        <a href="{{ route('client.credit.index') }}" class="block">
+          <div class="credit-card">
+            <div class="relative z-10">
+              <div class="credit-label">Your Balance</div>
+              <div class="credit-amount">
+                <span class="credit-currency">RM</span>
+                <span>{{ number_format($userCredit, 2) }}</span>
+              </div>
+              <button type="button" class="topup-btn w-full" onclick="event.preventDefault(); window.location='{{ route('client.credit.topup') }}'">
+                💳 Top Up Credit
+              </button>
+            </div>
+            <div class="credit-icon">💰</div>
+          </div>
+        </a>
+      @endauth
+
       <nav class="p-4 space-y-2">
         <a href="{{ url('/') }}" 
            class="nav-link"
@@ -561,7 +675,7 @@
     <!-- Sidebar (Mobile) -->
     <div class="md:hidden fixed inset-0 z-40" x-show="sidebarOpen" x-cloak>
       <div class="absolute inset-0 bg-black/50 mobile-menu-overlay" @click="sidebarOpen=false"></div>
-      <aside class="absolute left-0 top-0 h-full w-80 max-w-[85vw] sidebar mobile-menu-enter">
+      <aside class="absolute left-0 top-0 h-full w-80 max-w-[85vw] sidebar mobile-menu-enter overflow-y-auto">
         <div class="flex items-center justify-between p-4 border-b border-gray-200">
           <span class="font-bold text-xl bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Menu</span>
           <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors" @click="sidebarOpen=false">
@@ -570,6 +684,28 @@
             </svg>
           </button>
         </div>
+        
+        <!-- Credit Card Display (Mobile) -->
+        @auth
+          @php
+            $userCredit = auth()->user()->user?->credit ?? 0;
+          @endphp
+          <a href="{{ route('client.credit.index') }}" class="block">
+            <div class="credit-card">
+              <div class="relative z-10">
+                <div class="credit-label">Your Balance</div>
+                <div class="credit-amount">
+                  <span class="credit-currency">RM</span>
+                  <span>{{ number_format($userCredit, 2) }}</span>
+                </div>
+                <button type="button" class="topup-btn w-full" onclick="event.preventDefault(); window.location='{{ route('client.credit.topup') }}'">
+                  💳 Top Up Credit
+                </button>
+              </div>
+              <div class="credit-icon">💰</div>
+            </div>
+          </a>
+        @endauth
         
         <nav class="p-4 space-y-2">
           <a href="{{ url('/') }}" 

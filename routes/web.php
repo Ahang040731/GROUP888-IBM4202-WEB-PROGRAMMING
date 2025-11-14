@@ -17,7 +17,7 @@ use App\Http\Controllers\AdminBorrowHistoryController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminFinesController;
 use App\Http\Controllers\CartController;
-
+use App\Http\Controllers\CreditController;
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes
@@ -72,7 +72,11 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('client.cart.destroy');
     Route::delete('/cart', [CartController::class, 'clear'])->name('client.cart.clear');
 
-    
+    // Credit Routes
+    Route::get('/credit', [CreditController::class, 'index'])->name('client.credit.index');
+    Route::get('/credit/topup', [CreditController::class, 'topup'])->name('client.credit.topup');
+    Route::post('/credit/topup', [CreditController::class, 'processTopup'])->name('client.credit.process-topup');
+        
     // Borrow History
     Route::get('/borrowhistory', [BorrowHistoryController::class, 'index'])->name('client.borrowhistory.index');
         Route::post('/borrowhistory/{borrow}/extend', [BorrowHistoryController::class, 'extend'])->name('client.borrowhistory.extend');

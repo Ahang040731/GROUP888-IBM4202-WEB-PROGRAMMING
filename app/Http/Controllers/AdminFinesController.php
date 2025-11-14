@@ -7,6 +7,8 @@ use App\Models\BorrowHistory;
 use Illuminate\Http\Request;
 use App\Models\Fine;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AdminFinesController extends Controller
 {
@@ -18,7 +20,6 @@ class AdminFinesController extends Controller
 
         // For SweetAlert dropdowns
         $users = User::orderBy('username')->get();
-
         $borrows = BorrowHistory::with(['book', 'user'])
             ->orderByDesc('created_at')
             ->limit(50)
@@ -26,7 +27,6 @@ class AdminFinesController extends Controller
 
         return view('admin.fines.index', compact('fines', 'users', 'borrows'));
     }
-
 
     public function approve(Fine $fine): RedirectResponse
     {
@@ -44,22 +44,58 @@ class AdminFinesController extends Controller
         }
 
         $user = $fine->user;
-
         if (!$user) {
             return back()->with('error', 'User profile not found for this fine.');
         }
 
-        // ✅ Do NOT check or deduct credit anymore
-        // Approval just marks the fine as paid/settled
+        DB::beginTransaction();
+        
+        try {
+            $amount = $fine->amount;
 
-        $fine->update([
-            'status'          => 'paid',
-            'paid_at'         => now(),
-            'transaction_ref' => 'FINE-' . $fine->id . '-' . time(),
-            'handled_by'      => $admin->id,
-        ]);
+            // ✅ Check payment method and deduct credit if needed
+            if ($fine->method === 'credit') {
+                // Check if user has sufficient credit
+                if ($user->credit < $amount) {
+                    return back()->with('error', 
+                        'User has insufficient credit balance. Available: RM ' . 
+                        number_format($user->credit, 2) . 
+                        ', Required: RM ' . number_format($amount, 2)
+                    );
+                }
 
-        return back()->with('success', 'Fine has been approved and marked as paid.');
+                // Deduct credit using the CreditController method
+                $success = CreditController::deductForFine($user->id, $amount, $fine->id);
+                
+                if (!$success) {
+                    DB::rollBack();
+                    return back()->with('error', 'Failed to deduct credit from user account.');
+                }
+            }
+            // For other payment methods (cash, card, online_banking, tng), 
+            // assume payment was received offline - no credit deduction needed
+
+            // Update fine status
+            $fine->update([
+                'status'          => 'paid',
+                'paid_at'         => now(),
+                'transaction_ref' => 'FINE-' . $fine->id . '-' . time(),
+                'handled_by'      => $admin->id,
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 
+                $fine->method === 'credit' 
+                    ? 'Fine approved and RM ' . number_format($amount, 2) . ' deducted from user credit.'
+                    : 'Fine approved and marked as paid.'
+            );
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Fine approval failed: ' . $e->getMessage());
+            return back()->with('error', 'Failed to approve fine. Please try again.');
+        }
     }
 
     public function reject(Fine $fine): RedirectResponse

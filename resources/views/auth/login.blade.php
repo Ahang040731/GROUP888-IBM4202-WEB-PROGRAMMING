@@ -151,8 +151,16 @@
         }
 
         .login-header {
-            text-align: center;
-            margin-bottom: 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;    /* centers horizontally */
+        /* optional: justify-content: center;  // if you want vertical centering too */
+        }
+        .login-header img {
+        display: block;
+        width: 180px;             /* adjust size as needed */
+        height: auto;
+        margin-bottom: 12px;     /* keep your spacing */
         }
 
         .login-title {
@@ -374,7 +382,7 @@
         <!-- Login Card -->
         <div class="login-card">
             <div class="login-header">
-                <div style="font-size: 3rem; margin-bottom: 12px;">📚</div>
+                <div style="font-size: 3rem; margin-bottom: 12px;"> <img src="{{ asset('images/Books.gif') }}"> </div>
                 <h1 class="login-title">Login</h1>
                 <p class="login-subtitle">Welcome back to Library System</p>
             </div>

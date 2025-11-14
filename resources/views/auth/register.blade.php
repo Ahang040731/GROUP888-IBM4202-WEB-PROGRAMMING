@@ -152,8 +152,16 @@
         }
 
         .register-header {
-            text-align: center;
-            margin-bottom: 32px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;    /* centers horizontally */
+        /* optional: justify-content: center;  // if you want vertical centering too */
+        }
+        .register-header img {
+        display: block;
+        width: 180px;             /* adjust size as needed */
+        height: auto;
+        margin-bottom: 12px;     /* keep your spacing */
         }
 
         .register-title {
@@ -361,7 +369,7 @@
         <!-- Register Card -->
         <div class="register-card">
             <div class="register-header">
-                <div style="font-size: 3rem; margin-bottom: 12px;">📚</div>
+                <div style="font-size: 3rem; margin-bottom: 12px;"> <img src="{{ asset('images/Books(1).gif') }}"></div>
                 <h1 class="register-title">Register</h1>
                 <p class="register-subtitle">Create your Library System account</p>
             </div>
